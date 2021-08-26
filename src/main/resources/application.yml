@@ -1,0 +1,5 @@
+generate:
+  packagePrefix: "com.hym.devtool."
+  diskPath: "src/main/java/com/hym/devtool/"
+  pageListPath: "com.hym.devtool.basemodel.pagelist.PageList"
+  apiResultPath: "com.hym.devtool.basemodel.ApiResult"
