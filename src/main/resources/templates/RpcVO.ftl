@@ -1,5 +1,5 @@
 package ${packageName}.vo;
 
-public class ${Rpc}VO {
+public class ${Name}VO {
 
 }

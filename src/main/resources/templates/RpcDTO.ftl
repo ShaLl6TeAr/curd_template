@@ -1,5 +1,5 @@
 package ${packageName}.dto;
 
-public class ${Rpc}DTO {
+public class ${Name}DTO {
 
 }

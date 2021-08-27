@@ -1,13 +1,13 @@
-public class ${Rpc}DTO extend PageList {
+public class ${Name}DTO extend PageList {
 
 }
 
-public class ${Rpc}VO {
+public class ${Name}VO {
 
 }
 
-@RequestMapping(value = "/${rpc}")
-public ApiResult<${Rpc}VO> ${rpc}(@Validated ${Rpc}DTO dto) {
+@RequestMapping(value = "/${name}")
+public ApiResult<${Name}VO> ${name}(@Validated ${Name}DTO dto) {
     return new ApiResult<>(PageList.pageList(dto,
         () -> , );
 }

@@ -2,6 +2,6 @@ package ${packageName}.dto;
 
 import ${PageList};
 
-public class ${Rpc}DTO extends PageList {
+public class ${Name}DTO extends PageList {
 
 }

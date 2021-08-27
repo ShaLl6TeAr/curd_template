@@ -2,6 +2,7 @@ package com.hym.devtool.generator;
 
 import lombok.Getter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 @ConfigurationProperties(prefix = "generate")
@@ -13,12 +14,16 @@ public class GenConfig {
     private static String diskPath;
     private static String pageListPath;
     private static String apiResultPath;
+    private static String servicePath;
+    private static String daoPath;
 
     public void setPackagePrefix(String packagePrefix) {
+        System.out.println("read properties");
         if (GenConfig.packagePrefix != null) {
             return;
         }
         GenConfig.packagePrefix = packagePrefix;
+        System.out.println(GenConfig.getPackagePrefix());
     }
 
     public void setDiskPath(String diskPath) {
@@ -42,6 +47,20 @@ public class GenConfig {
         GenConfig.apiResultPath = apiResultPath;
     }
 
+    public void setServicePath(String servicePath) {
+        if (GenConfig.servicePath != null) {
+            return;
+        }
+        GenConfig.servicePath = servicePath;
+    }
+
+    public static void setDaoPath(String daoPath) {
+        if (GenConfig.daoPath != null) {
+            return;
+        }
+        GenConfig.daoPath = daoPath;
+    }
+
     public static String getPackagePrefix() {
         return packagePrefix;
     }
@@ -56,5 +75,13 @@ public class GenConfig {
 
     public static String getApiResultPath() {
         return apiResultPath;
+    }
+
+    public static String getServicePath() {
+        return servicePath;
+    }
+
+    public static String getDaoPath() {
+        return daoPath;
     }
 }
