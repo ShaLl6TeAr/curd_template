@@ -19,6 +19,12 @@ public class RpcGen {
     private static final String API_RESULT = GenConfig.getApiResultPath();
     private static final String PAGE_LIST = GenConfig.getPageListPath();
 
+    private static final int ADD_TYPE_CONTROLLER = 1;
+    private static final int ADD_TYPE_SERVICE = 2;
+
+    private static final int GEN_TYPE_CONTROLLER = 1;
+    private static final int GEN_TYPE_SERVICE = 2;
+
     private static String packageName;
 
     private static String module = "";
@@ -27,11 +33,12 @@ public class RpcGen {
     private static final String ADD = "add";
     private static final String UPDATE = "update";
     private static final String GET = "get";
+    private static final String DEL = "del";
     private static final String EXIT = "exit";
-    private static final String RPC = "rpc ";
-    private static final String GEN_ALL = "genall ";
-    private static final String SERVICE = "service ";
-    private static final String DAO = "dao ";
+    private static final String RPC = "rpc";
+    private static final String GEN_ALL = "genall";
+    private static final String SERVICE = "service";
+    private static final String DAO = "dao";
     private static final String MODULE = "-m";
 
     private static final String HELP = " -m: 跳转module输入; " +
@@ -49,6 +56,11 @@ public class RpcGen {
         System.out.println("请输入module: ");
         String module = sc.nextLine();
 
+        if (EXIT.equals(module)) {
+            System.out.println("退出");
+            return;
+        }
+
         while (true) {
             System.out.println("请输入命令: ");
             String s = sc.nextLine();
@@ -63,24 +75,35 @@ public class RpcGen {
             }
             RpcGen.module = module;
             packageName = PACKAGE_PREFIX + module;
-            if (s.contains(GEN_ALL)) {
-                genAll(upcaseFirstChar(s.replace(GEN_ALL, "")));
-            } else if (s.contains(SERVICE)) {
-                genService(upcaseFirstChar(s.replace(SERVICE, "")));
-            } else if (s.contains(DAO)) {
-//                genDAO(upcaseFirstChar(s.replace(DAO, "")));
-            } else if (s.contains(RPC)) {
-                String name = upcaseFirstChar(s.replace(RPC, ""));
-                genService(module);
-                if (name.contains(LIST)) {
-                    genListRpc(name);
-                    genService(name);
-                } else {
-                    genRpc(name);
-                }
-            } else {
+
+            String[] commands = s.split(" ");
+
+            if (commands.length == 0) {
                 System.out.println("命令错误，请输入命令");
                 System.out.println("帮助：" + HELP);
+                continue;
+            }
+            String type = commands[0];
+
+            for (int i = 1; i < commands.length; i++) {
+                if (Utils.isEqual(type, GEN_ALL)) {
+                    genAll(commands[i]);
+                } else if (Utils.isEqual(type, SERVICE)) {
+                    genService(commands[i]);
+                } else if (Utils.isEqual(type, DAO)) {
+//                genDAO(upcaseFirstChar(s.replace(DAO, "")));
+                } else if (Utils.isEqual(type, RPC)) {
+                    String name = commands[i];
+                    if (name.contains(LIST)) {
+                        genListRpc(name);
+                    } else {
+                        genRpc(name);
+                    }
+                } else {
+                    System.out.println("命令错误，请输入命令");
+                    System.out.println("帮助：" + HELP);
+                    break;
+                }
             }
         }
     }
@@ -96,12 +119,14 @@ public class RpcGen {
         generateListRpc(name);
         generateListRpcDTO(name);
         generateRpcVO(name);
+        genService(name);
     }
 
     private static void genRpc(String name) throws Exception {
         generateRpc(name);
         generateRpcDTO(name);
         generateRpcVO(name);
+        genService(name);
     }
 
     private static void genService(String name) throws Exception {
@@ -110,12 +135,12 @@ public class RpcGen {
 
     private static void generateRpc(String name) throws Exception {
         Fun listController = new Fun("Controller.java", "RpcController.ftl", "controller");
-        createOrAdd(listController, name);
+        createOrAdd(listController, name, GEN_TYPE_CONTROLLER);
     }
 
     private static void generateListRpc(String name) throws Exception {
         Fun listController = new Fun("Controller.java", "ListRpcController.ftl", "controller");
-        createOrAdd(listController, name);
+        createOrAdd(listController, name, GEN_TYPE_CONTROLLER);
     }
 
     private static void generateRpcDTO(String name) throws Exception {
@@ -135,14 +160,14 @@ public class RpcGen {
 
     private static void generateService(String name) throws Exception {
         Fun service = new Fun("Service.java", "Service.ftl", "service");
-        createOrAdd(service, name);
+        createOrAdd(service, name, GEN_TYPE_SERVICE);
     }
 
     private static void generateServiceInterface(String name) throws Exception {
         Fun service = new Fun("Service.java", "ServiceInterface.ftl", "service");
-        createOrAdd(service, name);
+        createOrAdd(service, name, GEN_TYPE_SERVICE);
         Fun impl = new Fun("ServiceImpl.java", "ServiceImpl.ftl", "service");
-        createOrAdd(impl, name);
+        createOrAdd(impl, name, GEN_TYPE_SERVICE);
     }
 
     private static boolean gen(String name, String path, String templateName) throws IOException, TemplateException {
@@ -171,14 +196,24 @@ public class RpcGen {
         }
     }
 
-    private static void createOrAdd(Fun fun, String name) throws TemplateException, IOException {
+    private static void createOrAdd(Fun fun, String name, int genType) throws TemplateException, IOException {
         System.out.println("gen " + fun.getType());
         final String suffix = fun.getSuffix();
         final String templateName = fun.getTemplateName();
         String filePath = checkFile( fun.getType());
         filePath = getPath(filePath, module + suffix);
         if (!gen(name, filePath, templateName)) {
-            String add = add(name);
+            String add = "";
+            switch (genType) {
+                case GEN_TYPE_CONTROLLER:
+                    add = addController(name);
+                    break;
+                case GEN_TYPE_SERVICE:
+                    add = addService(name);
+                    break;
+                default:
+                    throw new RuntimeException("gen type error");
+            }
             File rpcFile = new File(filePath);
             try (BufferedReader reader = new BufferedReader(new FileReader(rpcFile))) {
                 String tempStr;
@@ -208,13 +243,31 @@ public class RpcGen {
         }
     }
 
-    private static String add(String name) throws TemplateException, IOException {
+    private static String addController(String name) throws TemplateException, IOException {
+        return getString(name, ADD_TYPE_CONTROLLER);
+    }
+
+    private static String addService(String name) throws TemplateException, IOException {
+        return getString(name, ADD_TYPE_SERVICE);
+    }
+
+    private static String getString(String name, int addType) throws IOException, TemplateException {
         try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
-            if (name.contains(LIST)) {
-                freeMarkerProcess(name, "AddListRpc.ftl", bos);
-            } else {
-                freeMarkerProcess(name, "AddRpc.ftl", bos);
+            switch (addType) {
+                case ADD_TYPE_CONTROLLER:
+                    if (name.contains(LIST)) {
+                        freeMarkerProcess(name, "AddListRpc.ftl", bos);
+                    } else {
+                        freeMarkerProcess(name, "AddRpc.ftl", bos);
+                    }
+                    break;
+                case ADD_TYPE_SERVICE:
+                    freeMarkerProcess(name, "AddService.ftl", bos);
+                    break;
+                default:
+                    throw new RuntimeException("add type error");
             }
+
             String add = bos.toString();
             System.out.println(add);
             return add;
@@ -224,6 +277,18 @@ public class RpcGen {
     private static void freeMarkerProcess(String name, String templateName, OutputStream fos) throws IOException, TemplateException {
         Map<String, String> dataMap = new HashMap<>();
         Template template = FreeMarkerTemplateUtils.getTemplate(templateName);
+        String type = "";
+        if (name.contains(ADD)) {
+            type = ADD;
+        } else if (name.contains(UPDATE)) {
+            type = UPDATE;
+        } else if (name.contains(GET)) {
+            type = GET;
+        } else if (name.contains(LIST)) {
+            type = LIST;
+        } else if (name.contains(DEL)) {
+            type = DEL;
+        }
         dataMap.put("name", name);
         dataMap.put("Name", upcaseFirstChar(name));
         dataMap.put("packageName", packageName);
@@ -231,6 +296,7 @@ public class RpcGen {
         dataMap.put("Module", upcaseFirstChar(RpcGen.module));
         dataMap.put("ApiResult", API_RESULT);
         dataMap.put("PageList", PAGE_LIST);
+        dataMap.put("type", type);
         template.process(dataMap, new BufferedWriter(new OutputStreamWriter(fos, StandardCharsets.UTF_8), 10240));
     }
 
