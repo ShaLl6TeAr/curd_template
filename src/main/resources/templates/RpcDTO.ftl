@@ -1,6 +1,7 @@
 package ${packageName}.dto;
 
 public class ${Name}DTO {
+
     <#if (type = 'get' || type = 'del' || type = 'update')>
     private String id;
 
@@ -12,4 +13,5 @@ public class ${Name}DTO {
         return this.id;
     }
     </#if>
+
 }

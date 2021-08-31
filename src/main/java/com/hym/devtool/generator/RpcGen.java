@@ -109,6 +109,7 @@ public class RpcGen {
     }
 
     public static void genAll(String name) throws Exception {
+        name = upcaseFirstChar(name);
         genListRpc(LIST + name);
         genRpc(ADD + name);
         genRpc(GET + name);
@@ -160,7 +161,9 @@ public class RpcGen {
 
     private static void generateService(String name) throws Exception {
         Fun service = new Fun("Service.java", "Service.ftl", "service");
-        createOrAdd(service, name, GEN_TYPE_SERVICE);
+        if (name.contains(GET) || name.contains(DEL) || name.contains(UPDATE)) {
+            createOrAdd(service, name, GEN_TYPE_SERVICE);
+        }
     }
 
     private static void generateServiceInterface(String name) throws Exception {
@@ -235,6 +238,7 @@ public class RpcGen {
                         writer.write(String.valueOf(old));
                         writer.append(add);
                         writer.write("\r\n}");
+                        System.out.println("\r\n}");
                     }
                 } else {
                     throw new RuntimeException(name + " gen nothing");
