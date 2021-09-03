@@ -1,4 +1,4 @@
-package com.hym.devtool.basemodel;
+package com.hym.devtool.base;
 
 public class ApiResult<T> {
 

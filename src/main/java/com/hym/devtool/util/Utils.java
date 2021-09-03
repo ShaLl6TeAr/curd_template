@@ -69,7 +69,7 @@ public class Utils {
     }
 
     public static boolean isNull(String s) {
-        return s == null || s == "";
+        return s == null || s.equals("");
     }
 
     public static boolean isNotNull(String s) {

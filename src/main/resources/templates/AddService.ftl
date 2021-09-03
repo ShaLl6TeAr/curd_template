@@ -1,17 +1,17 @@
 <#switch type>
     <#case 'get'>
-    public PO get${Name}(String id) {
+    public PO ${name}(String id) {
         return result;
     }
     <#break>
     <#case 'update'>
-    public int update${Name}(String id) {
+    public int ${name}(String id) {
         return 0;
     }
     <#break>
     <#case 'del'>
-    public int del${Name}(String id) {
+    public int ${name}(String id) {
         return 0;
-    }<#break>
-
-    </#switch>
+    }
+    <#break>
+</#switch>

@@ -14,17 +14,9 @@ import javax.annotation.Resource;
 
 @RestController
 @RequestMapping("/${module}")
-public class ${Module}Controller {
+public class ${ControllerName}Controller {
 
     @Resource
     private ${Module}Service ${module}Service;
 
-    @PostMapping(value = "/${name}")
-    public ApiResult<${Name}VO> ${name}(@Validated ${Name}DTO dto) {
-        ApiResult<${Name}VO> result = new ApiResult<>();
-        result.setResult(PageList.pageList(dto,
-        () -> service.${name}(),
-        ${Name}VO::new));
-        return result;
-    }
 }

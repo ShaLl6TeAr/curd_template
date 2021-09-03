@@ -1,0 +1,76 @@
+package com.hym.devtool.util;
+
+import com.alibaba.fastjson.JSON;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.ThreadContext;
+import org.apache.shiro.web.subject.WebSubject;
+import org.springframework.stereotype.Component;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.mock.web.MockHttpSession;
+import org.springframework.web.context.WebApplicationContext;
+
+import javax.annotation.Resource;
+import java.lang.reflect.Field;
+
+@Component
+public class TestUtil {
+
+    @Resource
+    private SecurityManager securityManager;
+
+    @Resource
+    private WebApplicationContext webApplicationContext;
+
+    //用户登录
+    private void login() {
+        MockHttpServletRequest mReq = new MockHttpServletRequest(webApplicationContext.getServletContext());
+        MockHttpServletResponse mRsp = new MockHttpServletResponse();
+        MockHttpSession mockHttpSession = new MockHttpSession(webApplicationContext.getServletContext());
+        mReq.setSession(mockHttpSession);
+        SecurityUtils.setSecurityManager(securityManager);
+        Subject subject = new WebSubject.Builder(mReq, mRsp)
+                .buildWebSubject();
+        UsernamePasswordToken token = new UsernamePasswordToken("admin", "Huihang@1234", true);
+        subject.login(token);
+        ThreadContext.bind(subject);
+    }
+
+    public static <T> T randomInit(Class<T> tClass) {
+        Object instance;
+        try {
+            Field[] declaredFields = tClass.getDeclaredFields();
+            instance = tClass.newInstance();
+
+            for (Field f : declaredFields) {
+                f.setAccessible(true);
+                Class<?> type = f.getType();
+                if (String.class.equals(type)) {
+                    f.set(instance, "测试" + f.getName());
+                } else if (Integer.class.equals(type)) {
+                    f.set(instance, 1);
+                } else if (Double.class.equals(type)) {
+                    f.set(instance, 2.d);
+                } else if (Float.class.equals(type)) {
+                    f.set(instance, 3.f);
+                } else if (Boolean.class.equals(type)) {
+                    f.set(instance, true);
+                } else {
+                    f.set(instance, null);
+                }
+            }
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+
+        return tClass.cast(instance);
+    }
+
+    public static <T> void testCheck(T t) {
+        JSON json = (JSON) JSON.toJSON(t);
+        System.out.println(json.toJSONString());
+    }
+}

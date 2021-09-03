@@ -1,4 +1,4 @@
-package com.hym.devtool.basemodel.pagelist;
+package com.hym.devtool.base.pagelist;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;

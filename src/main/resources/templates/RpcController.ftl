@@ -5,6 +5,7 @@ import ${packageName}.dto.*;
 import ${packageName}.vo.*;
 import ${ApiResult};
 import ${PageList};
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,15 +15,9 @@ import javax.annotation.Resource;
 
 @RestController
 @RequestMapping("/${module}")
-public class ${Module}Controller {
+public class ${ControllerName}Controller {
 
     @Resource
     private ${Module}Service ${module}Service;
 
-    @PostMapping(value = "/${name}")
-    public ApiResult<${Name}VO> ${name}(@Validated ${Name}DTO dto) {
-        ApiResult<${Name}VO> result = new ApiResult<>();
-
-        return result;
-    }
 }

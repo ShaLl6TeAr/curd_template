@@ -18,12 +18,10 @@ public class GenConfig {
     private static String daoPath;
 
     public void setPackagePrefix(String packagePrefix) {
-        System.out.println("read properties");
         if (GenConfig.packagePrefix != null) {
             return;
         }
         GenConfig.packagePrefix = packagePrefix;
-        System.out.println(GenConfig.getPackagePrefix());
     }
 
     public void setDiskPath(String diskPath) {
