@@ -19,5 +19,4 @@ public class ${ControllerName}Controller {
 
     @Resource
     private ${Module}Service ${module}Service;
-
 }

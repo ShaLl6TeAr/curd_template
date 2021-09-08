@@ -8,8 +8,8 @@ public class ${Name}VO {
 
     private String id;
 
-    public ${Name}VO(Integer addCount, String id) {
-        this.addCount = addCount;
+    public ${Name}VO(Integer count, String id) {
+        this.addCount = count;
         this.id = id;
     }
 
@@ -24,23 +24,37 @@ public class ${Name}VO {
     <#case 'update'>
     private Integer updateCount;
 
-    public ${Name}VO(Integer updateCount) {
-        this.updateCount = updateCount;
+    private String id;
+
+    public ${Name}VO(Integer count, String id) {
+        this.updateCount = count;
+        this.id = id;
     }
 
     public Integer getUpdateCount() {
         return this.updateCount;
     }
+
+    public String getId() {
+    return this.id;
+    }
     <#break>
     <#case 'del'>
     private Integer delCount;
 
-    public ${Name}VO(Integer delCount) {
-        this.delCount = delCount;
+    private String id;
+
+    public ${Name}VO(Integer count, String id) {
+        this.delCount = count;
+        this.id = id;
     }
 
     public Integer getDelCount() {
         return this.delCount;
+    }
+
+    public String getId() {
+    return this.id;
     }
     <#break>
 </#switch>

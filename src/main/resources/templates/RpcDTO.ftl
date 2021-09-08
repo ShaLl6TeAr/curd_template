@@ -13,5 +13,16 @@ public class ${Name}DTO {
         return this.${name}Id;
     }
     </#if>
+    <#if (type = 'add')>
 
+    public ${Model} init${Model}() {
+        ${Model} ${model} = new ${Model}();
+        return ${model};
+    }
+    </#if>
+    <#if (type = 'update')>
+
+    public void update${Model}(${Model} ${model}) {
+    }
+    </#if>
 }

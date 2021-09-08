@@ -17,6 +17,14 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.context.WebApplicationContext;
 
+import cn.com.ecomonitor.common.model.basemodel.ApiResult;
+import cn.com.ecomonitor.common.util.EcoUtil;
+
+import javax.annotation.Resource;
+import java.util.Optional;
+
+import static junit.framework.TestCase.assertEquals;
+
 @RunWith(SpringRunner.class)
 <#--@ActiveProfiles("${springPropertiesActive}")-->
 <#--@SpringBootTest(classes={${MainClass}})-->
@@ -48,9 +56,4 @@ public class ${Module}Test {
 
     @Resource
     private ${Module}Controller ${module}Controller;
-
-    @Test
-    public void test${Module}() {
-
-    }
 }
