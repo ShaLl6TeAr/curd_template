@@ -12,12 +12,16 @@ import java.util.Scanner;
 
 public class RpcGen {
 
-    private static final String DISK_PATH = GenConfig.getDiskPath();
-    private static final String SERVICE_PATH = GenConfig.getServicePath();
-    private static final String DAO_PATH = GenConfig.getDaoPath();
-    private static final String PACKAGE_PREFIX = GenConfig.getPackagePrefix();
-    private static final String API_RESULT = GenConfig.getApiResultPath();
-    private static final String PAGE_LIST = GenConfig.getPageListPath();
+    private static final String DISK_PATH = GenProperties.getDiskPath();
+    private static final String SERVICE_PATH = GenProperties.getServicePath();
+    private static final String DAO_PATH = GenProperties.getDaoPath();
+    private static final String TEST_PATH = GenProperties.getTestPath();
+    private static final String PACKAGE_PREFIX = GenProperties.getPackagePrefix();
+    private static final String API_RESULT = GenProperties.getApiResultPath();
+    private static final String PAGE_LIST = GenProperties.getPageListPath();
+    private static final String TEST_UTIL = GenProperties.getTestUtilPath();
+    private static final String MAIN_CLASS = GenProperties.getMainClass();
+    private static final String SPRING_ACTIVE = GenProperties.getSpringPropertiesActive();
 
     private static final int GEN_TYPE_CONTROLLER = 1;
     private static final int GEN_TYPE_SERVICE = 2;
@@ -27,8 +31,8 @@ public class RpcGen {
     private static final int GEN_TYPE_CURD_SERVICE = 6;
 
     private static String packageName;
-    private static String module = "";
     private static String controllerName = "";
+    private static String module = "";
     private static String model = "";
 
     private static final String LIST = "list";
@@ -131,14 +135,14 @@ public class RpcGen {
         generateRpcVO("update" + uName);
         generateRpcVO("del" + uName);
         generateRpcVO("list" + uName);
-        Fun controller = new Fun(name, "Controller.java", "RpcController.ftl", "AddCurdRpc.ftl", "controller", GEN_TYPE_CONTROLLER);
+        GenConf controller = new GenConf(name, "Controller.java", "CreateController.ftl", "AddCurdController.ftl", "controller", GEN_TYPE_CONTROLLER);
         createAndAdd(controller);
-        Fun service = new Fun(name,"Service.java", "Service.ftl", "AddCurdService.ftl", "service", GEN_TYPE_SERVICE);
+        GenConf service = new GenConf(name,"Service.java", "CreateService.ftl", "AddCurdService.ftl", "service", GEN_TYPE_SERVICE);
 //        if (name.contains(GET) || name.contains(DEL) || name.contains(UPDATE)) {
 //        createAndAdd(service);
         genService(name);
 //        }
-        Fun test = new Fun(name, "Test.java", "RpcTest.ftl", "AddCurdTest.ftl", "test", GEN_TYPE_TEST);
+        GenConf test = new GenConf(name, "Test.java", "CreateTest.ftl", "AddCurdTest.ftl", "test", GEN_TYPE_TEST);
         createAndAdd(test);
     }
 
@@ -167,42 +171,42 @@ public class RpcGen {
     }
 
     private static void generateTest(String name) throws Exception {
-        Fun test = new Fun(name, "Test.java", "RpcTest.ftl",
-                "AddRpcTest.ftl", "test", GEN_TYPE_TEST);
+        GenConf test = new GenConf(name, "Test.java", "CreateTest.ftl",
+                "AddTest.ftl", "test", GEN_TYPE_TEST);
         createAndAdd(test);
     }
 
     private static void generateRpc(String name) throws Exception {
-        Fun controller = new Fun(name, "Controller.java",
-                "RpcController.ftl",
-                "AddRpc.ftl",
+        GenConf controller = new GenConf(name, "Controller.java",
+                "CreateController.ftl",
+                "AddController.ftl",
                 "controller", GEN_TYPE_CONTROLLER);
         createAndAdd(controller);
     }
 
     private static void generateListRpc(String name) throws Exception {
-        Fun listController = new Fun(name, "Controller.java", "ListRpcController.ftl",
-                "AddListRpc.ftl", "controller", GEN_TYPE_CONTROLLER);
+        GenConf listController = new GenConf(name, "Controller.java", "CreateController.ftl",
+                "AddListController.ftl", "controller", GEN_TYPE_CONTROLLER);
         createAndAdd(listController);
     }
 
     private static void generateRpcDTO(String name) throws Exception {
-        Fun dto = new Fun(name, "DTO.java", "RpcDTO.ftl", null, "dto", null);
+        GenConf dto = new GenConf(name, "DTO.java", "CreateDTO.ftl", null, "dto", null);
         create(dto);
     }
 
     private static void generateListRpcDTO(String name) throws Exception {
-        Fun dto = new Fun(name, "DTO.java", "ListRpcDTO.ftl", null, "dto", null);
+        GenConf dto = new GenConf(name, "DTO.java", "CreateListDTO.ftl", null, "dto", null);
         create(dto);
     }
 
     private static void generateRpcVO(String name) throws Exception {
-        Fun vo = new Fun(name, "VO.java", "RpcVO.ftl", null, "vo", null);
+        GenConf vo = new GenConf(name, "VO.java", "CreateVO.ftl", null, "vo", null);
         create(vo);
     }
 
     private static void generateService(String name) throws Exception {
-        Fun service = new Fun(name,"Service.java", "Service.ftl", "AddService.ftl", "service", GEN_TYPE_SERVICE);
+        GenConf service = new GenConf(name,"Service.java", "CreateService.ftl", "AddService.ftl", "service", GEN_TYPE_SERVICE);
         createAndAdd(service);
     }
 
@@ -221,23 +225,23 @@ public class RpcGen {
         return true;
     }
 
-    private static void create(Fun fun) throws TemplateException, IOException {
-        final String suffix = fun.getSuffix();
-        final String templateName = fun.getCreateTemplateName();
-        final String name = fun.getName();
-        String filePath = checkFile(fun.getType());
+    private static void create(GenConf genConf) throws TemplateException, IOException {
+        final String suffix = genConf.getSuffix();
+        final String templateName = genConf.getCreateTemplateName();
+        final String name = genConf.getName();
+        String filePath = checkFile(genConf.getType());
         filePath = getPath(filePath, name + suffix);
         if (!gen(name, filePath, templateName)) {
-            System.out.println(fun.getType() + " file exists, path : " + filePath);
+            System.out.println(genConf.getType() + " file exists, path : " + filePath);
         }
-        System.out.println("gen " + fun.getName() + " " + fun.getType());
+        System.out.println("gen " + genConf.getName() + " " + genConf.getType());
     }
 
-    private static void createAndAdd(Fun fun) throws TemplateException, IOException {
-        final String suffix = fun.getSuffix();
-        final String name = fun.getName();
-        final int genType = fun.getGenAddType();
-        String filePath = checkFile( fun.getType());
+    private static void createAndAdd(GenConf genConf) throws TemplateException, IOException {
+        final String suffix = genConf.getSuffix();
+        final String name = genConf.getName();
+        final int genType = genConf.getGenAddType();
+        String filePath = checkFile( genConf.getType());
 
         switch (genType) {
             case GEN_TYPE_CONTROLLER:
@@ -246,19 +250,21 @@ public class RpcGen {
                 break;
             case GEN_TYPE_SERVICE:
             case GEN_TYPE_CURD_SERVICE:
+                filePath = getPath(filePath, module + suffix);
+                break;
             case GEN_TYPE_TEST:
             case GEN_TYPE_CURD_TEST:
-                filePath = getPath(filePath, module + suffix);
+                filePath = getPath(TEST_PATH, module + suffix);
                 break;
             default:
                 throw new RuntimeException("gen type error");
         }
-        if (!gen(name, filePath, fun.getCreateTemplateName())) {
+        if (!gen(name, filePath, genConf.getCreateTemplateName())) {
             System.out.println(filePath + " has created");
         }
-        System.out.println("gen " + fun.getName() + " " + fun.getType());
+        System.out.println("gen " + genConf.getName() + " " + genConf.getType());
 
-        String add = getString(name, fun.getAddTemplateName());
+        String add = getString(name, genConf.getAddTemplateName());
         File rpcFile = new File(filePath);
         try (BufferedReader reader = new BufferedReader(new FileReader(rpcFile))) {
             String tempStr;
@@ -286,7 +292,7 @@ public class RpcGen {
             } else {
                 throw new RuntimeException(name + " gen nothing");
             }
-            System.out.println("add " + fun.getType() + ": " + fun.getName());
+            System.out.println("add " + genConf.getType() + ": " + genConf.getName());
         }
     }
 
@@ -325,12 +331,15 @@ public class RpcGen {
         }
         dataMap.put("ApiResult", API_RESULT);
         dataMap.put("PageList", PAGE_LIST);
+        dataMap.put("TestUtil", TEST_UTIL);
         dataMap.put("type", type);
         if (Utils.isNotNull(type)) {
             dataMap.put("Type", upCaseFirstChar(type));
         }
         dataMap.put("controllerName", controllerName);
         dataMap.put("ControllerName", upCaseFirstChar(controllerName));
+        dataMap.put("MainClass", MAIN_CLASS);
+        dataMap.put("springActive", SPRING_ACTIVE);
         template.process(dataMap, new BufferedWriter(new OutputStreamWriter(fos, StandardCharsets.UTF_8), 10240));
     }
 

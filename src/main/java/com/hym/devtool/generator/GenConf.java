@@ -3,7 +3,7 @@ package com.hym.devtool.generator;
 import lombok.Data;
 
 @Data
-public class Fun {
+public class GenConf {
 
     private String name;
     private String suffix;
@@ -12,7 +12,7 @@ public class Fun {
     private String type;
     private Integer genAddType;
 
-    public Fun(String name, String suffix, String createTemplateName, String addTemplateName, String type, Integer genAddType) {
+    public GenConf(String name, String suffix, String createTemplateName, String addTemplateName, String type, Integer genAddType) {
         this.name = name;
         this.suffix = suffix;
         this.createTemplateName = createTemplateName;

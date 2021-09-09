@@ -1,5 +1,9 @@
 generate:
   packagePrefix: "com.hym.devtool."
   diskPath: "src/main/java/com/hym/devtool/"
+  test-path: "src/test/java/com/hym/devtool/"
   pageListPath: "com.hym.devtool.basemodel.pagelist.PageList"
   apiResultPath: "com.hym.devtool.basemodel.ApiResult"
+  testUtilPath: "cn.com.ecomonitor.eco.TestUtil"
+  spring-properties-active: "watertest,datasource-watertest"
+  main-class: "ECO_MonitorApplication.class"

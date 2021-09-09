@@ -1,7 +1,7 @@
 
 
     @PostMapping(value = "/${name}")
-    public ApiResult<PageList.PageData<${Name}VO>> ${name}(@Validated ${Name}DTO dto) {
+    public ApiResult${r"<PageList.PageData<List"}${Model}${r"VO>>"} ${name}(@Validated ${Name}DTO dto) {
         return new ApiResult<>(
             result.setResult(PageList.pageList(dto,
             () -> service.${name}(),

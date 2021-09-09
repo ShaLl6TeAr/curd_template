@@ -5,8 +5,8 @@ public class ${Name}DTO {
     <#if (type = 'get' || type = 'del' || type = 'update') || type = 'find'>
     private String ${name}Id;
 
-    public void set${Name}Id(String ${name}Id) {
-        this.${name}Id = ${name}Id;
+    public void set${Model}Id(String ${model}Id) {
+        this.${model}Id = ${model}Id;
     }
 
     public String get${Name}Id() {
