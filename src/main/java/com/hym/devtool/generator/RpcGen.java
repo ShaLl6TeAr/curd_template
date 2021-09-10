@@ -6,15 +6,16 @@ import freemarker.template.TemplateException;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import java.sql.*;
+import java.util.*;
 
 public class RpcGen {
 
     private static final String DISK_PATH = GenProperties.getDiskPath();
     private static final String SERVICE_PATH = GenProperties.getServicePath();
     private static final String DAO_PATH = GenProperties.getDaoPath();
+    private static final String MAPPER_PATH = GenProperties.getMapperPath();
+    private static final String MODEL_PATH = GenProperties.getModelPath();
     private static final String TEST_PATH = GenProperties.getTestPath();
     private static final String PACKAGE_PREFIX = GenProperties.getPackagePrefix();
     private static final String API_RESULT = GenProperties.getApiResultPath();
@@ -23,17 +24,30 @@ public class RpcGen {
     private static final String MAIN_CLASS = GenProperties.getMainClass();
     private static final String SPRING_ACTIVE = GenProperties.getSpringPropertiesActive();
 
+    private static final String URL = DBProperties.getUrl();
+    private static final String USERNAME = DBProperties.getUsername();
+    private static final String PASSWORD = DBProperties.getPassword();
+    private static final String DRIVER = DBProperties.getDriver();
+
     private static final int GEN_TYPE_CONTROLLER = 1;
     private static final int GEN_TYPE_SERVICE = 2;
     private static final int GEN_TYPE_TEST = 3;
     private static final int GEN_TYPE_CURD_CONTROLLER = 4;
     private static final int GEN_TYPE_CURD_TEST = 5;
     private static final int GEN_TYPE_CURD_SERVICE = 6;
+    private static final int GEN_TYPE_MODEL = 7;
+    private static final int GEN_TYPE_MAPPER = 8;
+    private static final int GEN_TYPE_DAO = 9;
+    private static final int GEN_TYPE_VO = 10;
+    private static final int GEN_TYPE_DTO = 11;
+    private static final int GEN_TYPE_EXCEPTION = 12;
 
     private static String packageName;
     private static String controllerName = "";
     private static String module = "";
     private static String model = "";
+    private static String tableName = "";
+    private static String tableAnnotation = "";
 
     private static final String LIST = "list";
     private static final String ADD = "add";
@@ -45,7 +59,7 @@ public class RpcGen {
     private static final String RPC = "rpc";
     private static final String CURD = "curd";
     private static final String SERVICE = "service";
-    private static final String DAO = "dao";
+    private static final String MODEL = "model";
     private static final String MODULE_C = "-m";
     private static final String CONTROLLER_C = "-c";
 
@@ -55,6 +69,10 @@ public class RpcGen {
             "dao + 名称: 生成dao; " +
             "rpc + 名称: 生成controller接口; " +
             "exit: 退出;";
+
+    private static boolean genModel = false;
+
+    private static List<DBColumn> columnList;
 
     public static void genRpc() throws Exception {
 
@@ -99,11 +117,11 @@ public class RpcGen {
 
             for (int i = 1; i < commands.length; i++) {
                 if (Utils.isEqual(type, CURD)) {
-                    curd(commands[i]);
+                    genCurd(commands[i]);
                 } else if (Utils.isEqual(type, SERVICE)) {
                     genService(commands[i]);
-                } else if (Utils.isEqual(type, DAO)) {
-//                genDAO(upcaseFirstChar(s.replace(DAO, "")));
+                } else if (Utils.isEqual(type, MODEL)) {
+                    genModel(commands[i]);
                 } else if (Utils.isEqual(type, RPC)) {
                     String name = commands[i];
                     if (name.contains(LIST)) {
@@ -120,7 +138,25 @@ public class RpcGen {
         }
     }
 
-    public static void curd(String name) throws Exception {
+    private static void genModel(String name) throws Exception {
+        tableName = name;
+        name = camelCase2SnakeCase(name);
+        model = name;
+        genModel = true;
+        columnList = getDBColumn();
+        GenConf createModel = new GenConf(name, ".java", "CreateModel.ftl", null, "entity", GEN_TYPE_MODEL);
+        create(createModel);
+        GenConf dao = new GenConf(name, "DAO.java", "CreateModelDAO.ftl", null, "dao", GEN_TYPE_DAO);
+        create(dao);
+        GenConf mapper = new GenConf(name, "Mapper.xml", "CreateMapperXml.ftl", null, "mappers", GEN_TYPE_MAPPER);
+        create(mapper);
+        genModel = false;
+        GenConf createModelDTO = new GenConf(name, "DTO.java", "CreateModelDTO.ftl", null, "dto", GEN_TYPE_DTO);
+        create(createModelDTO);
+        genCurd(name);
+    }
+
+    private static void genCurd(String name) throws Exception {
         model = name;
         String uName = upCaseFirstChar(name);
         generateRpcDTO("add" + uName);
@@ -138,12 +174,11 @@ public class RpcGen {
         GenConf controller = new GenConf(name, "Controller.java", "CreateController.ftl", "AddCurdController.ftl", "controller", GEN_TYPE_CONTROLLER);
         createAndAdd(controller);
         GenConf service = new GenConf(name,"Service.java", "CreateService.ftl", "AddCurdService.ftl", "service", GEN_TYPE_SERVICE);
-//        if (name.contains(GET) || name.contains(DEL) || name.contains(UPDATE)) {
-//        createAndAdd(service);
-        genService(name);
-//        }
+        createAndAdd(service);
         GenConf test = new GenConf(name, "Test.java", "CreateTest.ftl", "AddCurdTest.ftl", "test", GEN_TYPE_TEST);
         createAndAdd(test);
+        GenConf exception = new GenConf(name, "NotFoundException.java", "CreateNotFoundException.ftl", null, "exception", GEN_TYPE_EXCEPTION);
+        create(exception);
     }
 
     public static void genListRpc(String name) throws Exception {
@@ -191,17 +226,17 @@ public class RpcGen {
     }
 
     private static void generateRpcDTO(String name) throws Exception {
-        GenConf dto = new GenConf(name, "DTO.java", "CreateDTO.ftl", null, "dto", null);
+        GenConf dto = new GenConf(name, "DTO.java", "CreateDTO.ftl", null, "dto", GEN_TYPE_DTO);
         create(dto);
     }
 
     private static void generateListRpcDTO(String name) throws Exception {
-        GenConf dto = new GenConf(name, "DTO.java", "CreateListDTO.ftl", null, "dto", null);
+        GenConf dto = new GenConf(name, "DTO.java", "CreateListDTO.ftl", null, "dto", GEN_TYPE_DTO);
         create(dto);
     }
 
     private static void generateRpcVO(String name) throws Exception {
-        GenConf vo = new GenConf(name, "VO.java", "CreateVO.ftl", null, "vo", null);
+        GenConf vo = new GenConf(name, "VO.java", "CreateVO.ftl", null, "vo", GEN_TYPE_VO);
         create(vo);
     }
 
@@ -229,8 +264,43 @@ public class RpcGen {
         final String suffix = genConf.getSuffix();
         final String templateName = genConf.getCreateTemplateName();
         final String name = genConf.getName();
-        String filePath = checkFile(genConf.getType());
-        filePath = getPath(filePath, name + suffix);
+        final int genType = genConf.getGenType();
+        String filePath;
+        switch (genType) {
+            case GEN_TYPE_CONTROLLER:
+            case GEN_TYPE_CURD_CONTROLLER:
+                filePath = checkPath(DISK_PATH + module + "/", controllerName + suffix);
+                break;
+            case GEN_TYPE_SERVICE:
+            case GEN_TYPE_CURD_SERVICE:
+                filePath = checkPath(SERVICE_PATH + module + "/service/", module + suffix);
+                break;
+            case GEN_TYPE_TEST:
+            case GEN_TYPE_CURD_TEST:
+                filePath = checkPath(TEST_PATH + module + "/", module + suffix);
+                break;
+            case GEN_TYPE_MODEL:
+                filePath = checkPath(MODEL_PATH + module + "/entity/", model + suffix);
+                break;
+            case GEN_TYPE_MAPPER:
+                filePath = checkPath(MAPPER_PATH + "mappers/", model + suffix);
+                break;
+            case GEN_TYPE_DAO:
+                filePath = checkPath(DAO_PATH + module + "/dao/", model + suffix);
+                break;
+            case GEN_TYPE_VO:
+                filePath = checkPath(DISK_PATH + module + "/vo/", name + suffix);
+                break;
+            case GEN_TYPE_DTO:
+                filePath = checkPath(DISK_PATH + module + "/dto/", name + suffix);
+                break;
+            case GEN_TYPE_EXCEPTION:
+                filePath = checkPath(MODEL_PATH + module + "/exception/", name + suffix);
+                break;
+            default:
+                throw new RuntimeException("gen type error");
+        }
+        genConf.setFilePath(filePath);
         if (!gen(name, filePath, templateName)) {
             System.out.println(genConf.getType() + " file exists, path : " + filePath);
         }
@@ -238,34 +308,10 @@ public class RpcGen {
     }
 
     private static void createAndAdd(GenConf genConf) throws TemplateException, IOException {
-        final String suffix = genConf.getSuffix();
-        final String name = genConf.getName();
-        final int genType = genConf.getGenAddType();
-        String filePath = checkFile( genConf.getType());
-
-        switch (genType) {
-            case GEN_TYPE_CONTROLLER:
-            case GEN_TYPE_CURD_CONTROLLER:
-                filePath = getPath(filePath, controllerName + suffix);
-                break;
-            case GEN_TYPE_SERVICE:
-            case GEN_TYPE_CURD_SERVICE:
-                filePath = getPath(filePath, module + suffix);
-                break;
-            case GEN_TYPE_TEST:
-            case GEN_TYPE_CURD_TEST:
-                filePath = getPath(TEST_PATH, module + suffix);
-                break;
-            default:
-                throw new RuntimeException("gen type error");
-        }
-        if (!gen(name, filePath, genConf.getCreateTemplateName())) {
-            System.out.println(filePath + " has created");
-        }
-        System.out.println("gen " + genConf.getName() + " " + genConf.getType());
-
-        String add = getString(name, genConf.getAddTemplateName());
-        File rpcFile = new File(filePath);
+        create(genConf);
+        String name = genConf.getName();
+        String add = getAddString(genConf.getName(), genConf.getAddTemplateName());
+        File rpcFile = new File(genConf.getFilePath());
         try (BufferedReader reader = new BufferedReader(new FileReader(rpcFile))) {
             String tempStr;
             int count = 0;
@@ -296,7 +342,7 @@ public class RpcGen {
         }
     }
 
-    private static String getString(String name, String templateName) throws IOException, TemplateException {
+    private static String getAddString(String name, String templateName) throws IOException, TemplateException {
         try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
             freeMarkerProcess(name, templateName, bos);
             String add = bos.toString();
@@ -306,7 +352,7 @@ public class RpcGen {
     }
 
     private static void freeMarkerProcess(String name, String templateName, OutputStream fos) throws IOException, TemplateException {
-        Map<String, String> dataMap = new HashMap<>();
+        Map<String, Object> dataMap = new HashMap<>();
         Template template = FreeMarkerTemplateUtils.getTemplate(templateName);
         String type = "";
         if (name.contains(ADD)) {
@@ -320,6 +366,10 @@ public class RpcGen {
         } else if (name.contains(DEL)) {
             type = DEL;
         }
+        if (genModel) {
+            dataMap.put("columnList", columnList);
+        }
+
         dataMap.put("name", name);
         dataMap.put("Name", upCaseFirstChar(name));
         dataMap.put("packageName", packageName);
@@ -329,9 +379,6 @@ public class RpcGen {
             dataMap.put("model", model);
             dataMap.put("Model", upCaseFirstChar(model));
         }
-        dataMap.put("ApiResult", API_RESULT);
-        dataMap.put("PageList", PAGE_LIST);
-        dataMap.put("TestUtil", TEST_UTIL);
         dataMap.put("type", type);
         if (Utils.isNotNull(type)) {
             dataMap.put("Type", upCaseFirstChar(type));
@@ -340,26 +387,55 @@ public class RpcGen {
         dataMap.put("ControllerName", upCaseFirstChar(controllerName));
         dataMap.put("MainClass", MAIN_CLASS);
         dataMap.put("springActive", SPRING_ACTIVE);
+        dataMap.put("tableName", tableName);
+
+        dataMap.put("ApiResult", API_RESULT);
+        dataMap.put("PageList", PAGE_LIST);
+        dataMap.put("TestUtil", TEST_UTIL);
+
+        dataMap.put("servicePath", setPath(SERVICE_PATH));
+        dataMap.put("daoPath", setPath(DAO_PATH));
+        dataMap.put("modelPath", setPath(MODEL_PATH));
+        dataMap.put("testPath", setPath(TEST_PATH));
+
         template.process(dataMap, new BufferedWriter(new OutputStreamWriter(fos, StandardCharsets.UTF_8), 10240));
     }
 
-    private static String checkFile(String type) {
-        if (Utils.isNull(type) || Utils.isEqual("controller", type)) {
-            type = "";
-        } else {
-            type = type + "/";
-        }
-        final String path = DISK_PATH + module + "/" + type;
-        File moduleFile = new File(path);
-        if (!moduleFile.exists()) {
-            if (!moduleFile.mkdirs()) {
-                throw new RuntimeException(path + " create error ");
-            }
-        }
-        return path;
+    private static String setPath(String path) {
+        return path.replace("../ecomonitor-dao/", "").replace("/", ".").replace("src.main.java.", "");
     }
 
-    private static String getPath(String path, String suffix) {
+    private static List<DBColumn> getDBColumn() throws SQLException, ClassNotFoundException {
+        Class.forName(DRIVER);
+        Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+        DatabaseMetaData databaseMetaData = connection.getMetaData();
+//        ResultSet tables = databaseMetaData.getTables(null, "%", tableName, null);
+        ResultSet resultSet = databaseMetaData.getColumns(null, "%", tableName, "%");
+        connection.close();
+        List<DBColumn> columnList = new ArrayList<>();
+        Set<String> columnSet = new HashSet<>();
+        while (resultSet.next()) {
+            DBColumn column = new DBColumn();
+//            if (resultSet.getString("COLUMN_NAME").equals("id")) continue;
+            column.setName(resultSet.getString("COLUMN_NAME"));
+            column.setType(resultSet.getString("TYPE_NAME"));
+            column.setComment(resultSet.getString("REMARKS"));
+            column.setField(camelCase2SnakeCase(resultSet.getString("COLUMN_NAME")));
+            if (!columnSet.contains(column.getName())) {
+                columnList.add(column);
+                columnSet.add(column.getName());
+            }
+        }
+        return columnList;
+    }
+
+    private static String checkPath(String path, String suffix) {
+        File file = new File(path);
+        if (!file.exists()) {
+            if (!file.mkdirs()) {
+                throw new RuntimeException(path + " crate error");
+            }
+        }
         String name = upCaseFirstChar(suffix);
         return path + name;
     }
@@ -368,6 +444,16 @@ public class RpcGen {
         char[] uName = name.toCharArray();
         uName[0] = Utils.charUppercase(uName[0]);
         return String.valueOf(uName);
+    }
+
+    private static String camelCase2SnakeCase(String name) {
+        char[] uName = name.toCharArray();
+        for (int i = 0; i < uName.length; i++) {
+            if (uName[i] == '_' && i + 1 < uName.length) {
+                uName[i+1] = Utils.charUppercase(uName[i+1]);
+            }
+        }
+        return String.valueOf(uName).replace("_", "");
     }
 
 }

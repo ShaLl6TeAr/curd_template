@@ -11,6 +11,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+<#if model?exists>
+import ${modelPath}${module}.entity.${Model};
+import ${servicePath}${module}.service.${Model}Service;
+</#if>
+
 import javax.annotation.Resource;
 
 @RestController

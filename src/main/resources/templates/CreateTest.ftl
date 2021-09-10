@@ -1,4 +1,4 @@
-package ${packageName};
+package ${testPath};
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -20,6 +20,9 @@ import ${TestUtil};
 import cn.com.ecomonitor.eco.controller.${module}.${ControllerName}Controller;
 import cn.com.ecomonitor.eco.controller.${module}.dto.*;
 import cn.com.ecomonitor.eco.controller.${module}.vo.*;
+<#if model?exists>
+import ${modelPath}${module}.entity.${Model};
+</#if>
 
 import javax.annotation.Resource;
 import java.util.Optional;

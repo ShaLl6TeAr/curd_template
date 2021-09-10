@@ -15,6 +15,8 @@ public class GenProperties {
     private static String apiResultPath;
     private static String testUtilPath;
     private static String servicePath;
+    private static String modelPath;
+    private static String mapperPath;
     private static String daoPath;
     private static String testPath;
 
@@ -56,7 +58,15 @@ public class GenProperties {
         GenProperties.servicePath = servicePath;
     }
 
-    public static void setDaoPath(String daoPath) {
+    public void setModelPath(String modelPath) {
+        GenProperties.modelPath = modelPath;
+    }
+
+    public void setMapperPath(String mapperPath) {
+        GenProperties.mapperPath = mapperPath;
+    }
+
+    public void setDaoPath(String daoPath) {
         if (GenProperties.daoPath != null) {
             return;
         }
@@ -101,6 +111,14 @@ public class GenProperties {
 
     public static String getDaoPath() {
         return daoPath;
+    }
+
+    public static String getModelPath() {
+        return modelPath;
+    }
+
+    public static String getMapperPath() {
+        return mapperPath;
     }
 
     public static String getMainClass() {

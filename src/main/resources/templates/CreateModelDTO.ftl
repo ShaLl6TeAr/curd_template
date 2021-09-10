@@ -1,5 +1,7 @@
 package ${packageName}.dto;
 
-public class ${Model}DTO extend ${Model} {
+import ${modelPath}${module}.entity.${Model};
+
+public class ${Model}DTO extends ${Model} {
 
 }

@@ -1,23 +1,29 @@
 package com.hym.devtool.generator;
 
-import lombok.Data;
+import lombok.Getter;
 
-@Data
+@Getter
 public class GenConf {
 
-    private String name;
-    private String suffix;
-    private String createTemplateName;
-    private String addTemplateName;
-    private String type;
-    private Integer genAddType;
+    private final String name;
+    private final String suffix;
+    private final String createTemplateName;
+    private final String addTemplateName;
+    private final String type;
+    private final Integer genType;
 
-    public GenConf(String name, String suffix, String createTemplateName, String addTemplateName, String type, Integer genAddType) {
+    private String filePath;
+
+    public GenConf(String name, String suffix, String createTemplateName, String addTemplateName, String type, Integer genType) {
         this.name = name;
         this.suffix = suffix;
         this.createTemplateName = createTemplateName;
         this.addTemplateName = addTemplateName;
         this.type = type;
-        this.genAddType = genAddType;
+        this.genType = genType;
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
     }
 }
