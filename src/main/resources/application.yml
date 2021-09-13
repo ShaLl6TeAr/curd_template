@@ -1,16 +1,17 @@
 generate:
   packagePrefix: "com.hym.devtool."
   diskPath: "src/main/java/com/hym/devtool/"
-  test-path: "src/test/java/com/hym/devtool/api/"
-  pageListPath: "com.hym.devtool.basemodel.pagelist.PageList"
-  apiResultPath: "com.hym.devtool.basemodel.ApiResult"
-  testUtilPath: "cn.com.ecomonitor.eco.TestUtil"
-  spring-properties-active: "watertest,datasource-watertest"
-  main-class: "ECO_MonitorApplication.class"
+  controllerPath: "module/"
   model-path: "src/main/java/com/hym/devtool/"
   mapper-path: "src/main/resources/"
   dao-path: "src/main/java/com/hym/devtool/"
   service-path: "src/main/java/com/hym/devtool/"
+  test-path: "src/test/java/com/hym/devtool/api/"
+  pageListPath: "com.hym.devtool.base.pagelist.PageList"
+  apiResultPath: "com.hym.devtool.base.ApiResult"
+  testUtilPath: "cn.com.ecomonitor.eco.TestUtil"
+  spring-properties-active: "dev"
+  main-class: "DevtoolApplication.class"
 
 db:
   driver: "com.mysql.cj.jdbc.Driver"

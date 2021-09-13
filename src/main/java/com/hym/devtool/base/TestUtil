@@ -69,7 +69,7 @@ public class TestUtil {
         return tClass.cast(instance);
     }
 
-    public static <T> void testCheck(T t) {
+    public static <T> void showJSON(T t) {
         JSON json = (JSON) JSON.toJSON(t);
         System.out.println(json.toJSONString());
     }

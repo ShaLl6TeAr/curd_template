@@ -34,10 +34,6 @@ public class DBColumn {
     public void setType(String type) {
         String javaType;
         switch (type.toLowerCase()) {
-            case "varchar":
-            case "test":
-                javaType = "String";
-                break;
             case "int":
             case "tinyint":
             case "smallint":
@@ -47,8 +43,10 @@ public class DBColumn {
                 javaType = "BigDecimal";
                 break;
             case "datetime":
+                javaType ="LocalDateTime";
+                break;
             case "date":
-                javaType = "Date";
+                javaType = "LocalDate";
                 break;
             case "double":
                 javaType = "Double";
@@ -60,6 +58,8 @@ public class DBColumn {
             case "bool":
                 javaType = "Boolean";
                 break;
+            case "varchar":
+            case "test":
             default:
                 javaType = "String";
         }

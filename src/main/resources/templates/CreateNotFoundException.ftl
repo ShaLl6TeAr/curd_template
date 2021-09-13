@@ -1,4 +1,4 @@
-package ${packageName}.exception;
+package ${modelPath}${module}.exception;
 
 public class ${Model}NotFoundException extends Exception {
 

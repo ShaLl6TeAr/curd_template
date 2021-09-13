@@ -26,11 +26,6 @@ dependencies {
 
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
-//    implementation 'org.springframework.boot:spring-boot-starter'
-//    compileOnly 'org.projectlombok:lombok'
-//    annotationProcessor 'org.projectlombok:lombok'
-//    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
 
@@ -49,10 +44,23 @@ dependencies {
 
 //    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter
 //    implementation group: 'org.springframework.boot', name: 'spring-boot-starter', version: '2.5.3'
+//
+//    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-validation
+//    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation', version: '2.5.3'
+//
+//    implementation('org.springframework.boot:spring-boot-starter-web')
+//    implementation('org.springframework.boot:spring-boot-starter-aop')
+//
+//    // https://mvnrepository.com/artifact/mysql/mysql-connector-java
+//    implementation group: 'mysql', name: 'mysql-connector-java', version: '6.0.6'
+//
+//// https://mvnrepository.com/artifact/org.mybatis.spring.boot/mybatis-spring-boot-starter
+//    implementation group: 'org.mybatis.spring.boot', name: 'mybatis-spring-boot-starter', version: '2.2.0'
+//
+//    implementation 'com.alibaba:fastjson:1.2.70'
 
 // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-freemarker
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-freemarker', version: '2.5.3'
-
 
 }
 

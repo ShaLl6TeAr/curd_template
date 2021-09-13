@@ -1,8 +1,12 @@
 package com.hym.devtool.generator;
 
 import com.hym.devtool.util.Utils;
+import freemarker.cache.ClassTemplateLoader;
+import freemarker.cache.NullCacheStorage;
+import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+import freemarker.template.TemplateExceptionHandler;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -53,7 +57,7 @@ public class RpcGen {
     private static final String ADD = "add";
     private static final String UPDATE = "update";
     private static final String GET = "get";
-    private static final String Find = "find";
+    private static final String FIND = "find";
     private static final String DEL = "del";
     private static final String EXIT = "exit";
     private static final String RPC = "rpc";
@@ -64,6 +68,7 @@ public class RpcGen {
     private static final String CONTROLLER_C = "-c";
 
     private static final String HELP = " -m: 跳转module输入; " +
+            "model + 名称：生成model, dao, mapper, controller, service, test, curd基本接口" +
             "curd + 名称: 生成list, add, update, get; " +
             "service + 名称: 生成service; " +
             "dao + 名称: 生成dao; " +
@@ -150,13 +155,15 @@ public class RpcGen {
         create(dao);
         GenConf mapper = new GenConf(name, "Mapper.xml", "CreateMapperXml.ftl", null, "mappers", GEN_TYPE_MAPPER);
         create(mapper);
-        genModel = false;
-        GenConf createModelDTO = new GenConf(name, "DTO.java", "CreateModelDTO.ftl", null, "dto", GEN_TYPE_DTO);
-        create(createModelDTO);
         genCurd(name);
+        genModel = false;
+//        GenConf createModelDTO = new GenConf(name, "DTO.java", "CreateModelDTO.ftl", null, "dto", GEN_TYPE_DTO);
+//        create(createModelDTO);
+        model = null;
     }
 
     private static void genCurd(String name) throws Exception {
+        name = camelCase2SnakeCase(name);
         model = name;
         String uName = upCaseFirstChar(name);
         generateRpcDTO("add" + uName);
@@ -353,7 +360,7 @@ public class RpcGen {
 
     private static void freeMarkerProcess(String name, String templateName, OutputStream fos) throws IOException, TemplateException {
         Map<String, Object> dataMap = new HashMap<>();
-        Template template = FreeMarkerTemplateUtils.getTemplate(templateName);
+        Template template = getTemplate(templateName);
         String type = "";
         if (name.contains(ADD)) {
             type = ADD;
@@ -361,7 +368,9 @@ public class RpcGen {
             type = UPDATE;
         } else if (name.contains(GET)) {
             type = GET;
-        } else if (name.contains(LIST)) {
+        } else if (name.contains(FIND)) {
+            type = FIND;
+        }else if (name.contains(LIST)) {
             type = LIST;
         } else if (name.contains(DEL)) {
             type = DEL;
@@ -402,7 +411,11 @@ public class RpcGen {
     }
 
     private static String setPath(String path) {
-        return path.replace("../ecomonitor-dao/", "").replace("/", ".").replace("src.main.java.", "");
+        return path.replace("../ecomonitor-dao/", "")
+                .replace("../ecomonitor/", "")
+                .replace("/", ".")
+                .replace("src.test.java.", "")
+                .replace("src.main.java.", "");
     }
 
     private static List<DBColumn> getDBColumn() throws SQLException, ClassNotFoundException {
@@ -455,5 +468,23 @@ public class RpcGen {
         }
         return String.valueOf(uName).replace("_", "");
     }
+
+    private static final Configuration CONFIGURATION = new Configuration(Configuration.VERSION_2_3_22);
+
+    static{
+        //这里比较重要，用来指定加载模板所在的路径
+        CONFIGURATION.setTemplateLoader(new ClassTemplateLoader(RpcGen.class, "/templates"));
+        CONFIGURATION.setDefaultEncoding("UTF-8");
+        CONFIGURATION.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+        CONFIGURATION.setCacheStorage(NullCacheStorage.INSTANCE);
+    }
+
+    private static Template getTemplate(String templateName) throws IOException {
+        return CONFIGURATION.getTemplate(templateName);
+    }
+
+//    private static void clearCache() {
+//        CONFIGURATION.clearTemplateCache();
+//    }
 
 }

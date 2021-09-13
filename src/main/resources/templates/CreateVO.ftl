@@ -1,4 +1,10 @@
 package ${packageName}.vo;
+<#if model?exists && (type = 'list' || type = 'get' || type = 'find')>
+
+import ${modelPath}${module}.entity.${Model};
+import com.fasterxml.jackson.annotation.JsonFormat;
+import java.time.LocalDateTime;
+</#if>
 
 public class ${Name}VO {
 
@@ -36,7 +42,7 @@ public class ${Name}VO {
     }
 
     public String getId() {
-    return this.id;
+        return this.id;
     }
     <#break>
     <#case 'del'>
@@ -54,8 +60,51 @@ public class ${Name}VO {
     }
 
     public String getId() {
-    return this.id;
+        return this.id;
     }
+    <#break>
+    <#case 'list'>
+    <#case 'get'>
+    <#case 'find'>
+    <#if model?exists>
+    <#if columnList?exists>
+        <#list columnList as column>
+        <#if column.field != 'deleteTime'
+            && column.field != 'deleteFlag'>
+    <#if (column.field = 'createTime' || column.field = 'updateTime')>
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+08:00")
+    </#if>
+    private ${column.type} ${column.field};
+
+        </#if>
+        </#list>
+    </#if>
+    public ${Name}VO(${Model} ${model}) {
+    <#if columnList?exists>
+        <#list columnList as column>
+            <#if column.field != 'deleteTime'
+            && column.field != 'deleteFlag'>
+        this.${column.field} = ${model}.get${column.field?cap_first}();
+            </#if>
+        </#list>
+    </#if>
+    }
+    <#if columnList?exists>
+        <#list columnList as column>
+            <#if column.field != 'deleteTime'
+            && column.field != 'deleteFlag'>
+    public ${column.type} get${column.field?cap_first}() {
+        return this.${column.field};
+    }
+
+    public void set${column.field?cap_first}(${column.type} ${column.field}) {
+        this.${column.field} = ${column.field};
+    }
+
+            </#if>
+        </#list>
+    </#if>
+    </#if>
     <#break>
 </#switch>
 

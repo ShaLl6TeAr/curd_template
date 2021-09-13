@@ -8,11 +8,11 @@
     }
 
     public ${Model} get${Model}(${Model} ${model}) throws ${Model}NotFoundException {
-        ${Model} ${model} = find${Model}(${model});
+        ${Model} result = find${Model}(${model});
         if (${model} == null) {
             throw new ${Model}NotFoundException(${model}.getId());
         }
-        return ${model};
+        return result;
     }
 
     public ${Model} find${Model}(${Model} ${model}) {
@@ -24,11 +24,9 @@
     }
 
     public int update${Model}(${Model} ${model}) throws ${Model}NotFoundException {
-<#--        try {-->
-<#--            get${Model}(${model}.getId());-->
-<#--        } catch (${Model}NotFoundException e) {-->
-<#--            throw new BusinessException(e.getMessage());-->
-<#--        }-->
+        ${Model} get = new ${Model}();
+        get.setId(${model}.getId());
+        get${Model}(get);
         return ${model}DAO.update${Model}(${model});
     }
 
@@ -36,5 +34,5 @@
         ${Model} ${model} = new ${Model}();
         ${model}.setId(id);
         get${Model}(${model});
-        REturn ${model}DAO.softDel${Model}(${model});
+        return ${model}DAO.softDel${Model}(${model});
     }

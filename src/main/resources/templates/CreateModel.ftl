@@ -1,5 +1,7 @@
 package ${modelPath}${module}.entity;
 
+import java.time.LocalDateTime;
+
 public class ${Model} {
 
 <#if columnList?exists>

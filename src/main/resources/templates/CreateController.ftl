@@ -1,19 +1,19 @@
 package ${packageName};
 
-import ${packageName}.service.${Module}Service;
-import ${packageName}.dto.*;
-import ${packageName}.vo.*;
-import ${ApiResult};
-import ${PageList};
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import ${packageName}.service.${Module}Service;
+import ${packageName}.dto.*;
+import ${packageName}.vo.*;
+import ${ApiResult};
+import ${PageList};
 <#if model?exists>
 import ${modelPath}${module}.entity.${Model};
-import ${servicePath}${module}.service.${Model}Service;
+import ${modelPath}${module}.exception.${Model}NotFoundException;
 </#if>
 
 import javax.annotation.Resource;

@@ -40,7 +40,7 @@
     @Test
     public void testUpdate${Model}() {
         Update${Name}DTO dto = TestUtil.randomInit(Update${Name}DTO.class);
-        dto.setUpdate${Name}Id(new${Model}Id);
+        dto.setId(new${Model}Id);
         TestUtil.showJSON(dto);
         ApiResult${"\l"}Update${Name}VO${"\g"} result = ${controllerName}Controller.update${Name}(dto);
         TestUtil.showJSON(result);
@@ -50,7 +50,7 @@
     @Test
     public void testDel${Model}() {
         Del${Name}DTO dto = new Del${Name}DTO();
-        dto.setDel${Name}Id(new${Model}Id);
+        dto.set${Name}Id(new${Model}Id);
         TestUtil.showJSON(dto);
         ApiResult${"\l"}Del${Name}VO${"\g"} result = ${controllerName}Controller.del${Name}(dto);
         TestUtil.showJSON(result);
