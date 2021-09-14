@@ -11,7 +11,7 @@
     @PostMapping(value = "/list${Model}")
     public ApiResult${r"<PageList.PageData<List"}${Model}${r"VO>>"} list${Model}(@Validated List${Model}DTO dto) {
         ApiResult${r"<PageList.PageData<List"}${Model}${r"VO>>"} result = new ApiResult${"\l"}${"\g"}();
-        ${Model} ${model} = new ${Model}();
+        ${Model}DTO ${model} = new ${Model}DTO();
         result.setResult(PageList.pageList(dto,
                     () -${"\g"} ${module}Service.list${Model}(${model}),
                     List${Model}VO::new));
@@ -21,7 +21,7 @@
     @PostMapping(value = "/get${Model}")
     public ApiResult${"\l"}Get${Model}VO${"\g"} get${Model}(@Validated Get${Model}DTO dto) {
         ApiResult${"\l"}Get${Model}VO${"\g"} result = new ApiResult${"\l"}${"\g"}();
-        ${Model} ${model} = new ${Model}();
+        ${Model}DTO ${model} = new ${Model}DTO();
         try {
             Get${Model}VO vo = new Get${Model}VO(${module}Service.get${Model}(${model}));
             result.setResult(vo);
@@ -34,7 +34,7 @@
     @PostMapping(value = "/find${Model}")
     public ApiResult${"\l"}Find${Model}VO${"\g"} find${Model}(@Validated Find${Model}DTO dto) {
         ApiResult${"\l"}Find${Model}VO${"\g"} result = new ApiResult${"\l"}${"\g"}();
-        ${Model} ${model} = new ${Model}();
+        ${Model}DTO ${model} = new ${Model}DTO();
         Find${Model}VO vo = new Find${Model}VO(${module}Service.find${Model}(${model}));
         result.setResult(vo);
         return result;
@@ -44,11 +44,11 @@
     public ApiResult${"\l"}Update${Model}VO${"\g"} update${Model}(@Validated @RequestBody Update${Model}DTO dto) {
         ApiResult${"\l"}Update${Model}VO${"\g"} result = new ApiResult${"\l"}${"\g"}();
         try {
-            ${Model} ${model} = new ${Model}();
+            ${Model}DTO ${model} = new ${Model}DTO();
             ${model}.setId(dto.getId());
-            ${Model} find = ${module}Service.get${Model}(${model});
-            dto.update${Model}(find);
-            int updateCount = ${module}Service.update${Model}(find);
+            ${Model} old = ${module}Service.get${Model}(${model});
+            dto.update${Model}(old);
+            int updateCount = ${module}Service.update${Model}(old);
             result.setResult(new Update${Model}VO(updateCount, ${model}.getId()));
         } catch (${Model}NotFoundException e) {
             throw new RuntimeException(e.getMessage());
@@ -59,10 +59,6 @@
     @PostMapping(value = "/del${Model}")
     public ApiResult${"\l"}Del${Model}VO${"\g"} del${Model}(@Validated Del${Model}DTO dto) {
         ApiResult${"\l"}Del${Model}VO${"\g"} result = new ApiResult${"\l"}${"\g"}();
-        try {
-            result.setResult(new Del${Model}VO(${module}Service.softDel${Model}(dto.getDel${Model}Id()), dto.getDel${Model}Id()));
-        } catch (${Model}NotFoundException e) {
-            throw new RuntimeException(e.getMessage());
-        }
+        result.setResult(new Del${Model}VO(${module}Service.softDel${Model}(dto.getDel${Model}Id()), dto.getDel${Model}Id()));
         return result;
     }

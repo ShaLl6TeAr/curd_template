@@ -7,7 +7,7 @@
         return ${model}DAO.add${Model}(${model});
     }
 
-    public ${Model} get${Model}(${Model} ${model}) throws ${Model}NotFoundException {
+    public ${Model} get${Model}(${Model}DTO ${model}) throws ${Model}NotFoundException {
         ${Model} result = find${Model}(${model});
         if (${model} == null) {
             throw new ${Model}NotFoundException(${model}.getId());
@@ -15,24 +15,23 @@
         return result;
     }
 
-    public ${Model} find${Model}(${Model} ${model}) {
+    public ${Model} find${Model}(${Model}DTO ${model}) {
         return ${model}DAO.find${Model}(${model});
     }
 
-    public List${"\l"}${Model}${"\g"} list${Model}(${Model} ${model}) {
+    public List${"\l"}${Model}${"\g"} list${Model}(${Model}DTO ${model}) {
         return ${model}DAO.list${Model}(${model});
     }
 
     public int update${Model}(${Model} ${model}) throws ${Model}NotFoundException {
-        ${Model} get = new ${Model}();
+        ${Model}DTO get = new ${Model}DTO();
         get.setId(${model}.getId());
         get${Model}(get);
         return ${model}DAO.update${Model}(${model});
     }
 
-    public int softDel${Model}(String id) throws ${Model}NotFoundException {
-        ${Model} ${model} = new ${Model}();
+    public int softDel${Model}(String id) {
+        ${Model}DTO ${model} = new ${Model}DTO();
         ${model}.setId(id);
-        get${Model}(${model});
         return ${model}DAO.softDel${Model}(${model});
     }

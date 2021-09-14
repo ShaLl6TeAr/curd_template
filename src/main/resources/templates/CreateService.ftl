@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 
 <#if model?exists>
 import ${modelPath}${module}.entity.${Model};
+import ${modelPath}${module}.dto.${Model}DTO;
 import ${modelPath}${module}.dao.${Model}DAO;
 import ${modelPath}${module}.exception.${Model}NotFoundException;
 </#if>

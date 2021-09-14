@@ -7,7 +7,7 @@ public class ${Model} {
 <#if columnList?exists>
     <#list columnList as column>
     // ${column.comment}
-    private ${column.type} ${column.field};
+    protected ${column.type} ${column.field};
 
     </#list>
 </#if>

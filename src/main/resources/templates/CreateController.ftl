@@ -13,6 +13,7 @@ import ${ApiResult};
 import ${PageList};
 <#if model?exists>
 import ${modelPath}${module}.entity.${Model};
+import ${modelPath}${module}.dto.${Model}DTO;
 import ${modelPath}${module}.exception.${Model}NotFoundException;
 </#if>
 

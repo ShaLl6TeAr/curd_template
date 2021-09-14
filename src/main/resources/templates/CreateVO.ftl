@@ -74,6 +74,7 @@ public class ${Name}VO {
     <#if (column.field = 'createTime' || column.field = 'updateTime')>
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+08:00")
     </#if>
+    // ${column.comment}
     private ${column.type} ${column.field};
 
         </#if>

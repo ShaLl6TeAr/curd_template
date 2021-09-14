@@ -2,6 +2,7 @@ package ${packageName}.dto;
 <#if (model?exists && (type = 'add' || type = 'update'))>
 
 import ${modelPath}${module}.entity.${Model};
+import ${modelPath}${module}.dto.${Model}DTO;
 </#if>
 
 public class ${Name}DTO {
@@ -16,6 +17,7 @@ public class ${Name}DTO {
                 && column.field != 'creator'
                 && column.field != 'updateTime'>
                     <#if !(column.field = 'id' && type = 'add')>
+    // ${column.comment}
     private ${column.type} ${column.field};
 
                     </#if>

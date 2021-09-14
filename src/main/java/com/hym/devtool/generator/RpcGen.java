@@ -45,6 +45,7 @@ public class RpcGen {
     private static final int GEN_TYPE_VO = 10;
     private static final int GEN_TYPE_DTO = 11;
     private static final int GEN_TYPE_EXCEPTION = 12;
+    private static final int GEN_TYPE_MODEL_DTO = 13;
 
     private static String packageName;
     private static String controllerName = "";
@@ -157,8 +158,8 @@ public class RpcGen {
         create(mapper);
         genCurd(name);
         genModel = false;
-//        GenConf createModelDTO = new GenConf(name, "DTO.java", "CreateModelDTO.ftl", null, "dto", GEN_TYPE_DTO);
-//        create(createModelDTO);
+        GenConf createModelDTO = new GenConf(name, "DTO.java", "CreateModelDTO.ftl", null, "dto", GEN_TYPE_MODEL_DTO);
+        create(createModelDTO);
         model = null;
     }
 
@@ -303,6 +304,9 @@ public class RpcGen {
                 break;
             case GEN_TYPE_EXCEPTION:
                 filePath = checkPath(MODEL_PATH + module + "/exception/", name + suffix);
+                break;
+            case GEN_TYPE_MODEL_DTO:
+                filePath = checkPath(MODEL_PATH + module + "/dto/", name + suffix);
                 break;
             default:
                 throw new RuntimeException("gen type error");
