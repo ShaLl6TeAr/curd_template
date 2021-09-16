@@ -11,9 +11,11 @@ import java.util.List;
 @Mapper
 public interface ${Model}DAO {
 
-    int add${Model}(@Param("${model}") ${Model} dto);
+    int add${Model}(@Param("${model}") ${Model} ${Model});
 
-    int update${Model}(@Param("${model}") ${Model} dto);
+    int update${Model}(@Param("${model}") ${Model} ${Model});
+
+    int updateAll${Model}(@Param("${model}") ${Model} ${Model});
 
     ${Model} find${Model}(@Param("${model}") ${Model}DTO dto);
 

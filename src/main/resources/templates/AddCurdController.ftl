@@ -8,7 +8,7 @@
         return result;
     }
 
-    @PostMapping(value = "/list${Model}")
+    @GetMapping(value = "/list${Model}")
     public ApiResult${r"<PageList.PageData<List"}${Model}${r"VO>>"} list${Model}(@Validated List${Model}DTO dto) {
         ApiResult${r"<PageList.PageData<List"}${Model}${r"VO>>"} result = new ApiResult${"\l"}${"\g"}();
         ${Model}DTO ${model} = new ${Model}DTO();
@@ -18,7 +18,7 @@
         return result;
     }
 
-    @PostMapping(value = "/get${Model}")
+    @GetMapping(value = "/get${Model}")
     public ApiResult${"\l"}Get${Model}VO${"\g"} get${Model}(@Validated Get${Model}DTO dto) {
         ApiResult${"\l"}Get${Model}VO${"\g"} result = new ApiResult${"\l"}${"\g"}();
         ${Model}DTO ${model} = new ${Model}DTO();
@@ -31,7 +31,7 @@
         return result;
     }
 
-    @PostMapping(value = "/find${Model}")
+    @GetMapping(value = "/find${Model}")
     public ApiResult${"\l"}Find${Model}VO${"\g"} find${Model}(@Validated Find${Model}DTO dto) {
         ApiResult${"\l"}Find${Model}VO${"\g"} result = new ApiResult${"\l"}${"\g"}();
         ${Model}DTO ${model} = new ${Model}DTO();

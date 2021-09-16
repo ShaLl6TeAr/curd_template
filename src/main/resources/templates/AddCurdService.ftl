@@ -30,6 +30,13 @@
         return ${model}DAO.update${Model}(${model});
     }
 
+    public int updateAll${Model}(${Model} ${model}) throws ${Model}NotFoundException {
+        ${Model}DTO get = new ${Model}DTO();
+        get.setId(${model}.getId());
+        get${Model}(get);
+        return ${model}DAO.update${Model}(${model});
+    }
+
     public int softDel${Model}(String id) {
         ${Model}DTO ${model} = new ${Model}DTO();
         ${model}.setId(id);
