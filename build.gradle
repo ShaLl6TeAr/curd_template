@@ -1,13 +1,20 @@
 plugins {
-    id 'org.springframework.boot' version '2.5.3'
+    id 'org.springframework.boot' version '2.5.4'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
+    id 'org.springframework.experimental.aot' version '0.10.3'
+    id 'org.graalvm.buildtools.native' version '0.9.3'
 }
 
 group = 'com.hym'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
 description = 'devTool'
+
+apply plugin: 'maven-publish'
+
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
 
 configurations {
     compileOnly {
@@ -16,19 +23,20 @@ configurations {
 }
 
 repositories {
+    maven { url 'https://repo.spring.io/release' }
     mavenCentral()
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter'
-    compileOnly 'org.projectlombok:lombok'
+    implementation 'org.springframework.boot:spring-boot-starter:2.5.4'
+    compileOnly 'org.projectlombok:lombok:1.18.20'
     annotationProcessor 'org.projectlombok:lombok'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test:2.5.4'
 
-    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor:2.5.4'
 
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.2'
 
     // https://mvnrepository.com/artifact/org.projectlombok/lombok
     compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.20'
@@ -61,10 +69,43 @@ dependencies {
 //    implementation 'com.alibaba:fastjson:1.2.70'
 
 // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-freemarker
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-freemarker', version: '2.5.3'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-freemarker', version: '2.5.4'
+
+//    // https://mvnrepository.com/artifact/org.springframework.experimental/spring-native
+//    implementation group: 'org.springframework.experimental', name: 'spring-native', version: '0.10.2'
+//
+//    // https://mvnrepository.com/artifact/org.springframework.experimental.aot/org.springframework.experimental.aot.gradle.plugin
+//    implementation group: 'org.springframework.experimental.aot', name: 'org.springframework.experimental.aot.gradle.plugin', version: '0.10.2', ext: 'pom'
+
+//    //    implementation 'org.springframework.boot:spring-boot-starter-freemarker'
+//    implementation 'org.springframework.boot:spring-boot-starter-web'
+//    compileOnly 'org.projectlombok:lombok'
+//    runtimeOnly 'mysql:mysql-connector-java'
+////    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+//    annotationProcessor 'org.projectlombok:lombok'
+////    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+//    // https://mvnrepository.com/artifact/com.github.pagehelper/pagehelper
+//    implementation group: 'com.github.pagehelper', name: 'pagehelper', version: '5.2.1'
+//
+//    // https://mvnrepository.com/artifact/org.freemarker/freemarker
+//    implementation group: 'org.freemarker', name: 'freemarker', version: '2.3.31'
+
 
 }
 
 test {
     useJUnitPlatform()
+}
+
+bootBuildImage {
+    builder = 'paketobuildpacks/builder:tiny'
+    environment = ['BP_NATIVE_IMAGE': 'true']
+}
+
+nativeBuild {
+    classpath processAotResources.outputs, compileAotJava.outputs
+}
+
+nativeTest {
+    classpath processAotTestResources.outputs, compileAotTestJava.outputs
 }
