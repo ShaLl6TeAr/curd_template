@@ -1,0 +1,45 @@
+package com.hym.devtool.base.exception;
+
+import org.apache.ibatis.executor.ErrorContext;
+
+public class BaseRuntimeException extends RuntimeException {
+
+    /**
+     * 错误码
+     */
+    protected Integer errorCode;
+
+    /**
+     * 错误上下文
+     */
+    protected ErrorContext errorContext;
+
+    BaseRuntimeException(String errorMsg) {
+        super(errorMsg);
+    }
+
+    BaseRuntimeException(int code, String errorMsg) {
+        super(errorMsg);
+        this.errorCode = code;
+    }
+
+    BaseRuntimeException(String errorMsg, Throwable throwable) {
+        super(errorMsg, throwable);
+    }
+
+    public Integer getErrorCode() {
+        return errorCode;
+    }
+
+    public void setErrorCode(Integer errorCode) {
+        this.errorCode = errorCode;
+    }
+
+    public ErrorContext getErrorContext() {
+        return errorContext;
+    }
+
+    public void setErrorContext(ErrorContext errorContext) {
+        this.errorContext = errorContext;
+    }
+}

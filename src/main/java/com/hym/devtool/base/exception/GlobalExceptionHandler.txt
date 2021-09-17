@@ -1,0 +1,93 @@
+package com.hym.devtool.base.exception;
+
+import cn.com.ecomonitor.common.model.basemodel.ApiResult;
+import cn.com.ecomonitor.eco.common.enums.ResponseEnums;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.validation.BindException;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
+import java.util.Map;
+
+@ControllerAdvice
+public class GlobalExceptionHandler {
+
+    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
+    /**
+     * 错误记录日志
+     */
+    @ExceptionHandler(value = {Exception.class})
+    @ResponseBody
+    private ApiResult<Object> logError(HttpServletRequest req, Exception e) {
+        GlobalExceptionHandler.printLogErr(req, e);
+        return new ApiResult<>(null, ResponseEnums.API_ERROR.getCode(), ResponseEnums.API_ERROR.getDesc());
+    }
+    /**
+     * 业务异常
+     */
+    @ExceptionHandler(value = {cn.com.ecomonitor.eco.common.exception.BaseRuntimeException.class})
+    @ResponseBody
+    public ApiResult<Object> baseRuntimeException (HttpServletRequest req, cn.com.ecomonitor.eco.common.exception.BaseRuntimeException e) {
+        GlobalExceptionHandler.printLogWarn(req, e);
+        return new ApiResult<>(null, e.getErrorCode(), e.getMessage());
+    }
+
+    /**
+     * dto参数验证
+     */
+    @ExceptionHandler(value = {BindException.class})
+    @ResponseBody
+    public ApiResult<Object> paramsCheckException(HttpServletRequest req, BindException e) {
+        GlobalExceptionHandler.printLogWarn(req, e);
+        StringBuilder eMsg = new StringBuilder();
+        eMsg.append("参数错误: ");
+        for (ObjectError error : e.getAllErrors()) {
+            if (error.getCodes() == null || error.getCodes().length < 2) {
+                continue;
+            }
+            eMsg.append(error.getCodes()[1]).append(": ").append(error.getDefaultMessage()).append("; ");
+        }
+        return new ApiResult<>(0, eMsg.toString());
+    }
+
+    private static void printLogErr(HttpServletRequest req, Exception e) {
+        if (e.getMessage().toLowerCase().contains("broken pipe")) {
+            printLogInfo(req, e);
+        } else {
+            log.error("url: " + req.getRequestURL());
+            log.error("uri: " + req.getRequestURI());
+            log.error("servletPath: " + req.getServletPath());
+            for (Map.Entry<String, String[]> map : req.getParameterMap().entrySet()) {
+                log.error("paramsName: " + map.getKey() + ", value :" + Arrays.toString(map.getValue()));
+            }
+            log.error("", e);
+        }
+    }
+
+    private static void printLogWarn(HttpServletRequest req, Exception e) {
+        log.warn("url: " + req.getRequestURL());
+        log.warn("uri: " + req.getRequestURI());
+        log.warn("servletPath: " + req.getServletPath());
+        for (Map.Entry<String, String[]> map : req.getParameterMap().entrySet()) {
+            log.warn("paramsName: " + map.getKey() + ", value :" + Arrays.toString(map.getValue()));
+        }
+        log.warn("", e);
+    }
+
+    private static void printLogInfo(HttpServletRequest req, Exception e) {
+        log.info("url: " + req.getRequestURL());
+        log.info("uri: " + req.getRequestURI());
+        log.info("servletPath: " + req.getServletPath());
+        for (Map.Entry<String, String[]> map : req.getParameterMap().entrySet()) {
+            log.info("paramsName: " + map.getKey() + ", value :" + Arrays.toString(map.getValue()));
+        }
+        log.info("", e);
+    }
+
+}

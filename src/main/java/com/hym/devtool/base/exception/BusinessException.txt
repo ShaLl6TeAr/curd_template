@@ -1,0 +1,24 @@
+package com.hym.devtool.base.exception;
+
+
+
+public class BusinessException extends BaseRuntimeException {
+
+    public BusinessException(String msg) {
+        super(msg);
+    }
+
+    public BusinessException(Integer code, String msg) {
+        super(code, msg);
+    }
+
+    public BusinessException(CodeEnum codeEnum) {
+        super(codeEnum.getMessage());
+        super.setErrorCode(codeEnum.getCode());
+    }
+
+    public BusinessException(CodeEnum codeEnum, String msg) {
+        super(codeEnum.getMessage() + ", msg: " + msg);
+        super.setErrorCode(codeEnum.getCode());
+    }
+}
