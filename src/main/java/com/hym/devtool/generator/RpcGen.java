@@ -130,11 +130,7 @@ public class RpcGen {
                     genModel(commands[i]);
                 } else if (Utils.isEqual(type, RPC)) {
                     String name = commands[i];
-                    if (name.contains(LIST)) {
-                        genListRpc(name);
-                    } else {
-                        genRpc(name);
-                    }
+                    genRpc(name);
                 } else {
                     System.out.println("命令错误，请输入命令");
                     System.out.println("帮助：" + HELP);
@@ -172,7 +168,7 @@ public class RpcGen {
         generateRpcDTO("find" + uName);
         generateRpcDTO("update" + uName);
         generateRpcDTO("del" + uName);
-        generateListRpcDTO("list" + uName);
+        generateRpcDTO("list" + uName);
         generateRpcVO("add" + uName);
         generateRpcVO("get" + uName);
         generateRpcVO("find" + uName);
@@ -187,14 +183,6 @@ public class RpcGen {
         createAndAdd(test);
         GenConf exception = new GenConf(name, "NotFoundException.java", "CreateNotFoundException.ftl", null, "exception", GEN_TYPE_EXCEPTION);
         create(exception);
-    }
-
-    public static void genListRpc(String name) throws Exception {
-        generateListRpc(name);
-        generateListRpcDTO(name);
-        generateRpcVO(name);
-        genService(name);
-        genTest(name);
     }
 
     private static void genRpc(String name) throws Exception {

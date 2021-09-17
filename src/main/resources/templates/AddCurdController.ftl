@@ -22,6 +22,7 @@
     public ApiResult${"\l"}Get${Model}VO${"\g"} get${Model}(@Validated Get${Model}DTO dto) {
         ApiResult${"\l"}Get${Model}VO${"\g"} result = new ApiResult${"\l"}${"\g"}();
         ${Model}DTO ${model} = new ${Model}DTO();
+        ${model}.setId(dto.getGet${Model}Id());
         try {
             Get${Model}VO vo = new Get${Model}VO(${module}Service.get${Model}(${model}));
             result.setResult(vo);

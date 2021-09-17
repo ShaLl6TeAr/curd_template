@@ -1,4 +1,4 @@
-package ${modelPath}${module}.dao;
+package ${daoPath}${module}.dao;
 
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Mapper;
@@ -12,6 +12,8 @@ import java.util.List;
 public interface ${Model}DAO {
 
     int add${Model}(@Param("${model}") ${Model} ${Model});
+
+    int batchAdd${Model}(@Param("${model}List") List<${Model}> ${Model}List);
 
     int update${Model}(@Param("${model}") ${Model} ${Model});
 

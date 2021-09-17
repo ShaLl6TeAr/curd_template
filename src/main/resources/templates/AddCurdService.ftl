@@ -7,6 +7,11 @@
         return ${model}DAO.add${Model}(${model});
     }
 
+    public int batchAdd${Model}(List<${Model}> ${model}List) {
+        ${model}List.forEach(d -> d.setId(""));
+        return ${model}DAO.batchAdd${Model}(${model}List);
+    }
+
     public ${Model} get${Model}(${Model}DTO ${model}) throws ${Model}NotFoundException {
         ${Model} result = find${Model}(${model});
         if (${model} == null) {

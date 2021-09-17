@@ -4,10 +4,20 @@ package ${packageName}.dto;
 import ${modelPath}${module}.entity.${Model};
 import ${modelPath}${module}.dto.${Model}DTO;
 </#if>
+<#if (type = 'update' || type = 'get' || type = 'del')>
 
+import javax.validation.constraints.NotNull;
+</#if>
+
+<#if (type = 'list')>
+import ${PageList};
+
+public class ${Name}DTO extends PageList {
+<#else>
 public class ${Name}DTO {
+</#if>
 
-<#if (type = 'add' || type = 'update')>
+<#if (type = 'add' || type = 'update' || type = 'find' || type = 'list')>
     <#if model?exists>
         <#if columnList?exists>
             <#list columnList as column>
@@ -17,6 +27,9 @@ public class ${Name}DTO {
                 && column.field != 'creator'
                 && column.field != 'updateTime'>
                     <#if !(column.field = 'id' && type = 'add')>
+                    <#if (column.field = 'id' && type = 'update' && type = 'get' && type = 'del')>
+    @NotNull
+                    </#if>
     // ${column.comment}
     private ${column.type} ${column.field};
 
@@ -26,6 +39,7 @@ public class ${Name}DTO {
         </#if>
     </#if>
 <#elseIf (type = 'get' || type = 'del')>
+    @NotNull
     private String ${name}Id;
 
     public void set${Model}Id(String ${name}Id) {
