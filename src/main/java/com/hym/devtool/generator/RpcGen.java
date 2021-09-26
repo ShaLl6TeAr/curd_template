@@ -332,6 +332,7 @@ public class RpcGen {
 //                    System.out.println(add);
                     writer.append(add);
                     writer.write("\r\n}");
+                    writer.flush();
 //                    System.out.println("}");
                 }
             } else {

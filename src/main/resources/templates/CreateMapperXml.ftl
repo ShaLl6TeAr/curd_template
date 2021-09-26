@@ -37,7 +37,7 @@
             column.name != 'delete_time' &&
             column.name != 'update_version' &&
             column.name != 'delete_flag')>
-                ,`${column.name}`
+            ,`${column.name}`
             </#if>
         </#list>
         )
@@ -49,7 +49,7 @@
             column.name != 'delete_time' &&
             column.name != 'update_version' &&
             column.name != 'delete_flag')>
-                ,${r"#{"}${model}.${column.field}${"}"}
+            ,${r"#{"}${model}.${column.field}${"}"}
             </#if>
         </#list> )
     </sql>
@@ -63,22 +63,23 @@
             column.name != 'delete_time' &&
             column.name != 'update_version' &&
             column.name != 'delete_flag')>
-                ,`${column.field}`
+                ,`${column.name}`
             </#if>
         </#list>
         )
         values
-        <foreach collection="modelList" index="collections" item="model" open="(" close=")" separator="," >
-            now(), now(), 0
+        <foreach collection="${model}List" index="collections" item="${model}" separator="," >
+            (now(), now(), 0
             <#list columnList as column>
                 <#if (column.name != 'create_time' &&
                 column.name != 'update_time' &&
                 column.name != 'delete_time' &&
                 column.name != 'update_version' &&
                 column.name != 'delete_flag')>
-                    ,${r"#{"}${model}.${column.name}${"}"}
+                    ,${r"#{"}${model}.${column.field}${"}"}
                 </#if>
             </#list>
+            )
         </foreach>
     </sql>
 
