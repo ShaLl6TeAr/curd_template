@@ -12,6 +12,7 @@ public class GenConf {
     private final String type;
     private final Integer genType;
 
+    private boolean isNew = false;
     private String filePath;
 
     public GenConf(String name, String suffix, String createTemplateName, String addTemplateName, String type, Integer genType) {
@@ -25,5 +26,13 @@ public class GenConf {
 
     public void setFilePath(String filePath) {
         this.filePath = filePath;
+    }
+
+    public void setNew(Boolean isNew) {
+        this.isNew = isNew;
+    }
+
+    public boolean isNew() {
+        return isNew;
     }
 }

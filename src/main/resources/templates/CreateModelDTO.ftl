@@ -1,8 +1,8 @@
 package ${modelPath}${module}.dto;
 
-import ${modelPath}${module}.entity.${Model};
+import ${modelPath}${module}.entity.${Model}Base;
 
-public final class ${Model}DTO extends ${Model} {
+public final class ${Model}DTO extends ${Model}Base {
 
 <#--    public ${Model}DTO() {-->
 

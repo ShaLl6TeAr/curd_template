@@ -64,7 +64,8 @@ public class RpcGen {
     private static final String RPC = "rpc";
     private static final String CURD = "curd";
     private static final String SERVICE = "service";
-    private static final String MODEL = "model";
+    private static final String CREATE_MODEL = "createModel";
+    private static final String UPDATE_MODEL = "updateModel";
     private static final String MODULE_C = "-m";
     private static final String CONTROLLER_C = "-c";
 
@@ -126,9 +127,11 @@ public class RpcGen {
                     genCurd(commands[i]);
                 } else if (Utils.isEqual(type, SERVICE)) {
                     genService(commands[i]);
-                } else if (Utils.isEqual(type, MODEL)) {
-                    genModel(commands[i]);
-                } else if (Utils.isEqual(type, RPC)) {
+                } else if (Utils.isEqual(type, CREATE_MODEL)) {
+                    genCreateModel(commands[i]);
+                } else if (Utils.isEqual(type, UPDATE_MODEL)) {
+                    genUpdateModel(commands[i]);
+                }else if (Utils.isEqual(type, RPC)) {
                     String name = commands[i];
                     genRpc(name);
                 } else {
@@ -140,7 +143,27 @@ public class RpcGen {
         }
     }
 
-    private static void genModel(String name) throws Exception {
+    private static void genUpdateModel(String name) throws Exception {
+        tableName = name;
+        name = camelCase2SnakeCase(name);
+        model = name;
+        genModel = true;
+        columnList = getDBColumn();
+//        GenConf createModel = new GenConf(name, ".java", "CreateModel.ftl", null, "entity", GEN_TYPE_MODEL);
+//        create(createModel);
+        GenConf createBaseModel = new GenConf(name, "Base.java", "CreateModelBase.ftl", null, "entity", GEN_TYPE_MODEL);
+        createBaseModel.setNew(true);
+        create(createBaseModel);
+//        GenConf dao = new GenConf(name, "DAO.java", "CreateModelDAO.ftl", null, "dao", GEN_TYPE_DAO);
+//        create(dao);
+        GenConf mapper = new GenConf(name, "Mapper.xml", "CreateMapperXml.ftl", null, "mappers", GEN_TYPE_MAPPER);
+        mapper.setNew(true);
+        create(mapper);
+        genModel = false;
+        model = null;
+    }
+
+    private static void genCreateModel(String name) throws Exception {
         tableName = name;
         name = camelCase2SnakeCase(name);
         model = name;
@@ -148,6 +171,8 @@ public class RpcGen {
         columnList = getDBColumn();
         GenConf createModel = new GenConf(name, ".java", "CreateModel.ftl", null, "entity", GEN_TYPE_MODEL);
         create(createModel);
+        GenConf createBaseModel = new GenConf(name, "Base.java", "CreateModelBase.ftl", null, "entity", GEN_TYPE_MODEL);
+        create(createBaseModel);
         GenConf dao = new GenConf(name, "DAO.java", "CreateModelDAO.ftl", null, "dao", GEN_TYPE_DAO);
         create(dao);
         GenConf mapper = new GenConf(name, "Mapper.xml", "CreateMapperXml.ftl", null, "mappers", GEN_TYPE_MAPPER);
@@ -241,16 +266,25 @@ public class RpcGen {
         createAndAdd(service);
     }
 
-    private static boolean gen(String name, String path, String templateName) throws IOException, TemplateException {
-        File mapperFile = new File(path);
-        if (!mapperFile.exists()) {
-            if (!mapperFile.createNewFile()) {
+    private static boolean gen(String name, String path, String templateName, boolean isNew) throws IOException, TemplateException {
+        File file = new File(path);
+        if (!file.exists()) {
+            if (!file.createNewFile()) {
                 throw new RuntimeException(path + " mkdir error");
             }
         } else {
-            return false;
+            if (isNew) {
+                if (!file.delete()) {
+                    throw new RuntimeException("file delete error, file: " + path);
+                }
+                if (!file.createNewFile()) {
+                    throw new RuntimeException(path + " mkdir error");
+                }
+            } else {
+                return false;
+            }
         }
-        try (FileOutputStream fos = new FileOutputStream(mapperFile)) {
+        try (FileOutputStream fos = new FileOutputStream(file)) {
             freeMarkerProcess(name, templateName, fos);
         }
         return true;
@@ -300,7 +334,7 @@ public class RpcGen {
                 throw new RuntimeException("gen type error");
         }
         genConf.setFilePath(filePath);
-        if (!gen(name, filePath, templateName)) {
+        if (!gen(name, filePath, templateName, genConf.isNew())) {
             System.out.println(genConf.getType() + " file exists, path : " + filePath);
         }
         System.out.println("gen " + genConf.getName() + " " + genConf.getType());

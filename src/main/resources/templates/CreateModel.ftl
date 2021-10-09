@@ -1,26 +1,7 @@
 package ${modelPath}${module}.entity;
 
-import java.time.LocalDateTime;
+import ${modelPath}${module}.entity.${Model}Base;
 
-public class ${Model} {
+public class ${Model} extends ${Model}Base {
 
-<#if columnList?exists>
-    <#list columnList as column>
-    // ${column.comment}
-    protected ${column.type} ${column.field};
-
-    </#list>
-</#if>
-<#if columnList?exists>
-    <#list columnList as column>
-    public ${column.type} get${column.field?cap_first}() {
-        return this.${column.field};
-    }
-
-    public void set${column.field?cap_first}(${column.type} ${column.field}) {
-        this.${column.field} = ${column.field};
-    }
-
-    </#list>
-</#if>
 }
