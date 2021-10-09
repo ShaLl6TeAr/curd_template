@@ -18,6 +18,8 @@ import ${packageName}.vo.*;
 <#--</#if>-->
 
 import javax.annotation.Resource;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Optional;
 
 import static junit.framework.TestCase.assertEquals;

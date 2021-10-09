@@ -1,12 +1,16 @@
 package ${packageName}.dto;
-<#if (model?exists && (type = 'add' || type = 'update'))>
+<#if (model?exists && (type = 'add' || type = 'update' || type = 'batchAdd'))>
 
 import ${modelPath}${module}.entity.${Model};
-import ${modelPath}${module}.dto.${Model}DTO;
 </#if>
 <#if (type = 'update' || type = 'get' || type = 'del')>
 
 import javax.validation.constraints.NotNull;
+</#if>
+<#if (type = 'batchAdd')>
+
+import java.util.List;
+import java.util.stream.Collectors;
 </#if>
 
 <#if (type = 'list')>
@@ -17,6 +21,10 @@ public class ${Name}DTO extends PageList {
 public class ${Name}DTO {
 </#if>
 
+<#if (type = 'batchAdd')>
+    private List${"\l"}Add${Model}DTO${"\g"} ${model}List;
+
+</#if>
 <#if (type = 'add' || type = 'update' || type = 'find' || type = 'list')>
     <#if model?exists>
         <#if columnList?exists>
@@ -91,28 +99,34 @@ public class ${Name}DTO {
     }
 
 </#if>
-<#if (type = 'add' || type = 'update')>
-    <#if model?exists>
-        <#if columnList?exists>
-            <#list columnList as column>
-                <#if column.field != 'deleteTime'
-                && column.field != 'deleteFlag'
-                && column.field != 'createTime'
-                && column.field != 'creator'
-                && column.field != 'updateTime'>
-                    <#if !(column.field = 'id' && type = 'add')>
-    public ${column.type} get${column.field?capFirst}() {
-        return this.${column.field};
+<#if (type = 'batchAdd')>
+    public List<${Model}> init${Model}List() {
+        return this.${model}List.stream().map(Add${Model}DTO::init${Model}).collect(Collectors.toList());
     }
 
-    public void set${column.field?capFirst}(${column.type} ${column.field}) {
-        this.${column.field} = ${column.field};
-    }
-
-                    </#if>
-                </#if>
-            </#list>
-        </#if>
-    </#if>
 </#if>
+<#--<#if (type = 'add' || type = 'update' || 'batchAdd')>-->
+<#--    <#if model?exists>-->
+<#--        <#if columnList?exists>-->
+<#--            <#list columnList as column>-->
+<#--                <#if column.field != 'deleteTime'-->
+<#--                && column.field != 'deleteFlag'-->
+<#--                && column.field != 'createTime'-->
+<#--                && column.field != 'creator'-->
+<#--                && column.field != 'updateTime'>-->
+<#--                    <#if !(column.field = 'id' && type = 'add')>-->
+<#--    public ${column.type} get${column.field?capFirst}() {-->
+<#--        return this.${column.field};-->
+<#--    }-->
+
+<#--    public void set${column.field?capFirst}(${column.type} ${column.field}) {-->
+<#--        this.${column.field} = ${column.field};-->
+<#--    }-->
+
+<#--                    </#if>-->
+<#--                </#if>-->
+<#--            </#list>-->
+<#--        </#if>-->
+<#--    </#if>-->
+<#--</#if>-->
 }

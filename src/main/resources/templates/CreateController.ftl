@@ -18,6 +18,8 @@ import ${modelPath}${module}.dto.${Model}DTO;
 import ${modelPath}${module}.exception.${Model}NotFoundException;
 </#if>
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 @RestController

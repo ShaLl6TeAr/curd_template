@@ -8,6 +8,15 @@
         return result;
     }
 
+    @PostMapping(value = "/batchAdd${Model}")
+    public ApiResult${"\l"}BatchAdd${Model}VO${"\g"} add${Model}(@Validated @RequestBody BatchAdd${Model}DTO dto) {
+        ApiResult${"\l"}BatchAdd${Model}VO${"\g"} result = new ApiResult${"\l"}${"\g"}();
+        List<${Model}> ${model}List = dto.init${Model}List();
+        int addCount = ${module}Service.batchAdd${Model}(${model}List);
+        result.setResult(new BatchAdd${Model}VO(addCount, ${model}List);
+        return result;
+    }
+
     @GetMapping(value = "/list${Model}")
     public ApiResult${r"<PageList.PageData<List"}${Model}${r"VO>>"} list${Model}(@Validated List${Model}DTO dto) {
         ApiResult${r"<PageList.PageData<List"}${Model}${r"VO>>"} result = new ApiResult${"\l"}${"\g"}();

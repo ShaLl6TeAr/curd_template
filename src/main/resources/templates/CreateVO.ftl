@@ -1,30 +1,55 @@
 package ${packageName}.vo;
-<#if model?exists && (type = 'list' || type = 'get' || type = 'find')>
+<#if model?exists && (type = 'list' || type = 'get' || type = 'find' || type = 'batchAdd')>
 
 import ${modelPath}${module}.entity.${Model};
+</#if>
+<#if (type = 'batchAdd')>
+
+import ${modelPath}${module}.dto.${Model}DTO;
+import java.util.stream.Collectors;
+
+import java.util.List;
+</#if>
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDateTime;
-</#if>
 
 public class ${Name}VO {
 
 <#switch type>
     <#case 'add'>
-    private Integer addCount;
+        private Integer addCount;
 
-    private String id;
+        private String id;
 
-    public ${Name}VO(Integer count, String id) {
+        public ${Name}VO(Integer count, String id) {
         this.addCount = count;
         this.id = id;
+        }
+
+        public Integer getAddCount() {
+        return this.addCount;
+        }
+
+        public String getId() {
+        return this.id;
+        }
+        <#break>
+    <#case 'batchAdd'>
+    private Integer addCount;
+
+    private List${"\l"}String${"\g"} idList;
+
+    public ${Name}VO(Integer count, List${"\l"}${Model}${"\g"} ${model}List) {
+        this.addCount = count;
+        this.idList = ${model}List.stream().map(${Model}::getId).collect(Collectors.toList());
     }
 
     public Integer getAddCount() {
         return this.addCount;
     }
 
-    public String getId() {
-        return this.id;
+    public List${"\l"}String${"\g"} getIdList() {
+        return this.idList;
     }
     <#break>
     <#case 'update'>

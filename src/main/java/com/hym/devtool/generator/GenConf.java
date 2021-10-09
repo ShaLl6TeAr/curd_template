@@ -32,7 +32,4 @@ public class GenConf {
         this.isNew = isNew;
     }
 
-    public boolean isNew() {
-        return isNew;
-    }
 }

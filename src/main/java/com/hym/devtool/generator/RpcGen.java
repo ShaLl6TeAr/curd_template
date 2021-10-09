@@ -56,6 +56,7 @@ public class RpcGen {
 
     private static final String LIST = "list";
     private static final String ADD = "add";
+    private static final String BATCH_ADD = "batchAdd";
     private static final String UPDATE = "update";
     private static final String GET = "get";
     private static final String FIND = "find";
@@ -156,9 +157,12 @@ public class RpcGen {
         create(createBaseModel);
 //        GenConf dao = new GenConf(name, "DAO.java", "CreateModelDAO.ftl", null, "dao", GEN_TYPE_DAO);
 //        create(dao);
-        GenConf mapper = new GenConf(name, "Mapper.xml", "CreateMapperXml.ftl", null, "mappers", GEN_TYPE_MAPPER);
-        mapper.setNew(true);
-        create(mapper);
+        GenConf baseMapper = new GenConf(name, "BaseMapper.xml", "CreateBaseMapperXml.ftl", null, "mappers", GEN_TYPE_MAPPER);
+        baseMapper.setNew(true);
+        create(baseMapper);
+        GenConf baseDao = new GenConf(name, "BaseDAO.java", "CreateModelBaseDAO.ftl", null, "dao", GEN_TYPE_DAO);
+        baseDao.setNew(true);
+        create(baseDao);
         genModel = false;
         model = null;
     }
@@ -175,8 +179,12 @@ public class RpcGen {
         create(createBaseModel);
         GenConf dao = new GenConf(name, "DAO.java", "CreateModelDAO.ftl", null, "dao", GEN_TYPE_DAO);
         create(dao);
+        GenConf baseDao = new GenConf(name, "BaseDAO.java", "CreateModelBaseDAO.ftl", null, "dao", GEN_TYPE_DAO);
+        create(baseDao);
         GenConf mapper = new GenConf(name, "Mapper.xml", "CreateMapperXml.ftl", null, "mappers", GEN_TYPE_MAPPER);
         create(mapper);
+        GenConf baseMapper = new GenConf(name, "BaseMapper.xml", "CreateBaseMapperXml.ftl", null, "mappers", GEN_TYPE_MAPPER);
+        create(baseMapper);
         genCurd(name);
         genModel = false;
         GenConf createModelDTO = new GenConf(name, "DTO.java", "CreateModelDTO.ftl", null, "dto", GEN_TYPE_MODEL_DTO);
@@ -189,12 +197,14 @@ public class RpcGen {
         model = name;
         String uName = upCaseFirstChar(name);
         generateRpcDTO("add" + uName);
+        generateRpcDTO("batchAdd" + uName);
         generateRpcDTO("get" + uName);
         generateRpcDTO("find" + uName);
         generateRpcDTO("update" + uName);
         generateRpcDTO("del" + uName);
         generateRpcDTO("list" + uName);
         generateRpcVO("add" + uName);
+        generateRpcVO("batchAdd" + uName);
         generateRpcVO("get" + uName);
         generateRpcVO("find" + uName);
         generateRpcVO("update" + uName);
@@ -391,6 +401,8 @@ public class RpcGen {
         String type = "";
         if (name.contains(ADD)) {
             type = ADD;
+        } else if (name.contains(BATCH_ADD)) {
+            type = BATCH_ADD;
         } else if (name.contains(UPDATE)) {
             type = UPDATE;
         } else if (name.contains(GET)) {
