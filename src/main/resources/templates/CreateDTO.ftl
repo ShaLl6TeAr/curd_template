@@ -104,29 +104,32 @@ public class ${Name}DTO {
         return this.${model}List.stream().map(Add${Model}DTO::init${Model}).collect(Collectors.toList());
     }
 
+    public void set${Model}List(List${"\l"}Add${Model}DTO${"\g"} ${model}List) {
+        this.${model}List = ${model}List;
+    }
 </#if>
-<#--<#if (type = 'add' || type = 'update' || 'batchAdd')>-->
-<#--    <#if model?exists>-->
-<#--        <#if columnList?exists>-->
-<#--            <#list columnList as column>-->
-<#--                <#if column.field != 'deleteTime'-->
-<#--                && column.field != 'deleteFlag'-->
-<#--                && column.field != 'createTime'-->
-<#--                && column.field != 'creator'-->
-<#--                && column.field != 'updateTime'>-->
-<#--                    <#if !(column.field = 'id' && type = 'add')>-->
-<#--    public ${column.type} get${column.field?capFirst}() {-->
-<#--        return this.${column.field};-->
-<#--    }-->
+<#if (type = 'add' || type = 'update')>
+    <#if model?exists>
+        <#if columnList?exists>
+            <#list columnList as column>
+                <#if column.field != 'deleteTime'
+                && column.field != 'deleteFlag'
+                && column.field != 'createTime'
+                && column.field != 'creator'
+                && column.field != 'updateTime'>
+                    <#if !(column.field = 'id' && type = 'add')>
+    public ${column.type} get${column.field?capFirst}() {
+        return this.${column.field};
+    }
 
-<#--    public void set${column.field?capFirst}(${column.type} ${column.field}) {-->
-<#--        this.${column.field} = ${column.field};-->
-<#--    }-->
+    public void set${column.field?capFirst}(${column.type} ${column.field}) {
+        this.${column.field} = ${column.field};
+    }
 
-<#--                    </#if>-->
-<#--                </#if>-->
-<#--            </#list>-->
-<#--        </#if>-->
-<#--    </#if>-->
-<#--</#if>-->
+                    </#if>
+                </#if>
+            </#list>
+        </#if>
+    </#if>
+</#if>
 }

@@ -24,16 +24,16 @@
     @Test
     public void testBatchAdd${Model}() {
         int addCount = 3;
-        List${"\l"}BatchAdd${Model}DTO${"\g"} ${model}List = new ArrayList<>();
+        List${"\l"}Add${Model}DTO${"\g"} ${model}List = new ArrayList<>();
         for (int i = 0; i < addCount; i++) {
             ${model}List.add(TestUtil.randomInit(Add${Model}DTO.class));
         }
-        BatchAdd${Model}DTO dto = new BatcAdd${Model}DTO();
+        BatchAdd${Model}DTO dto = new BatchAdd${Model}DTO();
         dto.set${Model}List(${model}List);
         TestUtil.showJSON(dto);
         ApiResult${"\l"}BatchAdd${Model}VO${"\g"} result = ${controllerName}Controller.batchAdd${Model}(dto);
         TestUtil.showJSON(result);
-        assertEquals(result.getResult().getAddCount(), Optional.of(addCount).get()));
+        assertEquals(result.getResult().getAddCount(), Optional.of(addCount).get());
     }
 
     @Test

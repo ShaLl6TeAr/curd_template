@@ -7,6 +7,7 @@ import ${modelPath}${module}.entity.${Model};
 import ${modelPath}${module}.dto.${Model}DTO;
 import ${daoPath}${module}.dao.${Model}DAO;
 import ${modelPath}${module}.exception.${Model}NotFoundException;
+import ${sqlBuilder};
 </#if>
 
 import javax.annotation.Resource;

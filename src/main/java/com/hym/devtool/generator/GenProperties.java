@@ -19,6 +19,7 @@ public class GenProperties {
     private static String mapperPath;
     private static String daoPath;
     private static String testPath;
+    private static String sqlBuilderPath;
 
     private static String mainClass;
     private static String springPropertiesActive;
@@ -89,6 +90,10 @@ public class GenProperties {
         GenProperties.springPropertiesActive = springPropertiesActive;
     }
 
+    public void setSqlBuilderPath(String sqlBuilderPath) {
+        GenProperties.sqlBuilderPath = sqlBuilderPath;
+    }
+
     public static String getPackagePrefix() {
         return packagePrefix;
     }
@@ -135,5 +140,9 @@ public class GenProperties {
 
     public static String getTestPath() {
         return testPath;
+    }
+
+    public static String getSqlBuilderPath() {
+        return sqlBuilderPath;
     }
 }

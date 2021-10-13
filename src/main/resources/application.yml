@@ -10,6 +10,7 @@ generate:
   pageListPath: "com.hym.devtool.base.pagelist.PageList"
   apiResultPath: "com.hym.devtool.base.ApiResult"
   testUtilPath: "cn.com.ecomonitor.eco.TestUtil"
+  sql-builder-path: ""
   spring-properties-active: "dev"
   main-class: "DevtoolApplication.class"
 

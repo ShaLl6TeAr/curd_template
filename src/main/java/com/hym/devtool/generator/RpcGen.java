@@ -27,6 +27,7 @@ public class RpcGen {
     private static final String TEST_UTIL = GenProperties.getTestUtilPath();
     private static final String MAIN_CLASS = GenProperties.getMainClass();
     private static final String SPRING_ACTIVE = GenProperties.getSpringPropertiesActive();
+    private static final String SQL_BUILDER = GenProperties.getSqlBuilderPath();
 
     private static final String URL = DBProperties.getUrl();
     private static final String USERNAME = DBProperties.getUsername();
@@ -445,6 +446,7 @@ public class RpcGen {
         dataMap.put("daoPath", setPath(DAO_PATH));
         dataMap.put("modelPath", setPath(MODEL_PATH));
         dataMap.put("testPath", setPath(TEST_PATH));
+        dataMap.put("sqlBuilder", setPath(SQL_BUILDER));
 
         template.process(dataMap, new BufferedWriter(new OutputStreamWriter(fos, StandardCharsets.UTF_8), 10240));
     }
@@ -452,6 +454,7 @@ public class RpcGen {
     private static String setPath(String path) {
         return path.replace("../ecomonitor-dao/", "")
                 .replace("../ecomonitor/", "")
+                .replace("../", "")
                 .replace("/", ".")
                 .replace("src.test.java.", "")
                 .replace("src.main.java.", "");
