@@ -48,6 +48,9 @@ public class DBColumn {
             case "date":
                 javaType = "LocalDate";
                 break;
+            case "time":
+                javaType = "LocalTime";
+                break;
             case "double":
                 javaType = "Double";
                 break;

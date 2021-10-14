@@ -16,6 +16,10 @@ public interface ${Model}BaseDAO {
 
     int batchAdd${Model}(@Param("${model}List") List<${Model}> ${Model}List);
 
+    int insertOrReplace${Model}(@Param("${model}") ${Model} ${model});
+
+    int batchInsertOrReplace${Model}(@Param("${model}List") List<${Model}> ${Model}List);
+
     int update${Model}(@Param("${model}") ${Model} ${model});
 
     int updateAll${Model}(@Param("${model}") ${Model} ${model});
@@ -28,5 +32,5 @@ public interface ${Model}BaseDAO {
 
     List<${Model}> selectSqlBuilder(@Param("operation") SqlBuilder.Operation operation);
 
-    int updateSqlBuilder(@Param("testGtflChildDevice") TestGtflChildDevice model, @Param("operation") SqlBuilder.Operation operation);
+    int updateSqlBuilder(@Param("${model}") ${Model} ${model}, @Param("operation") SqlBuilder.Operation operation);
 }

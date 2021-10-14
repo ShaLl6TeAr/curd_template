@@ -12,9 +12,19 @@
         return ${model}DAO.batchAdd${Model}(${model}List);
     }
 
+    public int insertOrReplace${Model}(${Model} ${model}) {
+        ${model}.setId(EcoUtil.uuid());
+        return ${model}DAO.insertOrReplace${Model}(${model});
+    }
+
+    public int batchInsertOrReplace${Model}(List<${Model}> ${model}List) {
+        ${model}List.forEach(d -> d.setId(EcoUtil.uuid()));
+        return ${model}DAO.batchInsertOrReplace${Model}(${model}List);
+    }
+
     public ${Model} get${Model}(${Model}DTO ${model}) throws ${Model}NotFoundException {
         ${Model} result = find${Model}(${model});
-        if (${model} == null) {
+        if (result == null) {
             throw new ${Model}NotFoundException(${model}.toString());
         }
         return result;
@@ -52,6 +62,6 @@
         return ${model}DAO.selectSqlBuilder(operation);
     }
 
-    public int updateSqlBuilder(TestGtflChildDevice model, SqlBuilder.Operation operation) {
-        return ${model}DAO.updateSqlBuilder(model, operation);
+    public int updateSqlBuilder(${Model} ${model}, SqlBuilder.Operation operation) {
+        return ${model}DAO.updateSqlBuilder(${model}, operation);
     }

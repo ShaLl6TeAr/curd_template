@@ -29,7 +29,7 @@
     </sql>
 
     <sql id="insert">
-        insert into ${tableName}
+        into ${tableName}
         (`create_time`, `update_time`, `delete_flag`
         <#list columnList as column>
             <#if (column.name != 'create_time' &&
@@ -55,7 +55,7 @@
     </sql>
 
     <sql id="batchInsert">
-        insert into ${tableName}
+        into ${tableName}
         (`create_time`, `update_time`, `delete_flag`
         <#list columnList as column>
             <#if (column.name != 'create_time' &&
@@ -172,9 +172,10 @@
                 <include refid="selectAll"/>
             </otherwise>
         </choose>
-        <trim prefix="where" prefixOverrides="and">
-            <include refid="sqlBuilderCondition"/>
-        </trim>
+        where `delete_flag` = 0
+<#--        <trim prefix="where" prefixOverrides="and">-->
+        <include refid="sqlBuilderCondition"/>
+<#--        </trim>-->
         <if test="operation.group != null and operation.group != ''">
             group by ${r"${operation.group}"}
         </if>
@@ -188,17 +189,29 @@
 
     <update id="updateSqlBuilder">
         <include refid="update"/>
-        where
-        <trim prefix="" prefixOverrides="and">
-            <include refid="sqlBuilderCondition"/>
-        </trim>
+        where `delete_flag` = 0
+<#--        <trim prefixOverrides="and">-->
+        <include refid="sqlBuilderCondition"/>
+<#--        </trim>-->
     </update>
 
     <insert id="add${Model}">
+        insert
         <include refid="insert"/>
     </insert>
 
     <insert id="batchAdd${Model}">
+        insert
+        <include refid="batchInsert"/>
+    </insert>
+
+    <insert id="insertOrReplace${Model}">
+        replace
+        <include refid="insert"/>
+    </insert>
+
+    <insert id="batchInsertOrReplace${Model}">
+        replace
         <include refid="batchInsert"/>
     </insert>
 
