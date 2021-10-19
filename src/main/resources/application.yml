@@ -11,9 +11,10 @@ generate:
   apiResultPath: "com.hym.devtool.base.ApiResult"
   testUtilPath: "cn.com.ecomonitor.eco.TestUtil"
   sql-builder-path: ""
-  dao-name: mapper
+  dao-name: "Mapper"
   spring-properties-active: "dev"
-  main-class: "DevtoolApplication.class"
+  main-class: "DevtoolApplication"
+  application-path: "com.hym.devtool"
 
 db:
   driver: "com.mysql.cj.jdbc.Driver"

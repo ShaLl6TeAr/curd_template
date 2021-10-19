@@ -13,6 +13,7 @@ import ${TestUtil};
 import ${packageName}.${ControllerName}Controller;
 import ${packageName}.dto.*;
 import ${packageName}.vo.*;
+import ${applicationPath}.${MainClass};
 <#--<#if model?exists>-->
 <#--import ${modelPath}${module}.entity.${Model};-->
 <#--</#if>-->
@@ -26,7 +27,7 @@ import static junit.framework.TestCase.assertEquals;
 
 @RunWith(SpringRunner.class)
 @ActiveProfiles("${springActive}")
-@SpringBootTest(classes={${MainClass}})
+@SpringBootTest(classes={${MainClass}.class})
 public class ${Module}Test {
 
     @Resource
