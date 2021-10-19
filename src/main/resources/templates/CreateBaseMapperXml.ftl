@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "${"http://mybatis.org/dtd/mybatis-3-mapper.dtd"}" >
-<mapper namespace="${daoPath}${module}.dao.${Model}BaseDAO">
+<mapper namespace="${daoPath}${daoName}.${module}.${Model}BaseDAO">
 
     <resultMap id="${Model}" type="${modelPath}${module}.entity.${Model}">
     <#if columnList?exists>
@@ -29,6 +29,7 @@
     </sql>
 
     <sql id="insert">
+        <if test="true"/>
         into ${tableName}
         (`create_time`, `update_time`, `delete_flag`
         <#list columnList as column>
@@ -55,6 +56,7 @@
     </sql>
 
     <sql id="batchInsert">
+        <if test="true"/>
         into ${tableName}
         (`create_time`, `update_time`, `delete_flag`
         <#list columnList as column>
@@ -218,7 +220,6 @@
     <select id="find${Model}" resultMap="${Model}">
         <include refid="selectAll"/>
         where `delete_flag` = 0
-        and `id` = ${r"#{"}${model}.id${"}"}
         <include refid="filter"/>
         limit 0,1;
     </select>

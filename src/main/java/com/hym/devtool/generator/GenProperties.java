@@ -20,6 +20,7 @@ public class GenProperties {
     private static String daoPath;
     private static String testPath;
     private static String sqlBuilderPath;
+    private static String daoName = "dao";
 
     private static String mainClass;
     private static String springPropertiesActive;
@@ -90,6 +91,10 @@ public class GenProperties {
         GenProperties.springPropertiesActive = springPropertiesActive;
     }
 
+    public void setDaoName(String daoName) {
+        GenProperties.daoName = daoName;
+    }
+
     public void setSqlBuilderPath(String sqlBuilderPath) {
         GenProperties.sqlBuilderPath = sqlBuilderPath;
     }
@@ -144,5 +149,9 @@ public class GenProperties {
 
     public static String getSqlBuilderPath() {
         return sqlBuilderPath;
+    }
+
+    public static String getDaoName() {
+        return daoName;
     }
 }

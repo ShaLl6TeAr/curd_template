@@ -28,6 +28,7 @@ public class RpcGen {
     private static final String MAIN_CLASS = GenProperties.getMainClass();
     private static final String SPRING_ACTIVE = GenProperties.getSpringPropertiesActive();
     private static final String SQL_BUILDER = GenProperties.getSqlBuilderPath();
+    private static final String DAO_NAME = GenProperties.getDaoName();
 
     private static final String URL = DBProperties.getUrl();
     private static final String USERNAME = DBProperties.getUsername();
@@ -124,71 +125,79 @@ public class RpcGen {
             }
             String type = commands[0];
 
-            for (int i = 1; i < commands.length; i++) {
-                if (Utils.isEqual(type, CURD)) {
-                    genCurd(commands[i]);
-                } else if (Utils.isEqual(type, SERVICE)) {
-                    genService(commands[i]);
-                } else if (Utils.isEqual(type, CREATE_MODEL)) {
-                    genCreateModel(commands[i]);
-                } else if (Utils.isEqual(type, UPDATE_MODEL)) {
-                    genUpdateModel(commands[i]);
-                }else if (Utils.isEqual(type, RPC)) {
+            if (Utils.isEqual(type, CURD)) {
+                genCurd(commands[1]);
+            } else if (Utils.isEqual(type, SERVICE)) {
+                genService(commands[1]);
+            } else if (Utils.isEqual(type, CREATE_MODEL)) {
+                genCreateModel(commands[1], commands[2]);
+            } else if (Utils.isEqual(type, UPDATE_MODEL)) {
+                genUpdateModel(commands[1], commands[2]);
+            } else if (Utils.isEqual(type, RPC)) {
+                for (int i = 1; i < commands.length; i++) {
                     String name = commands[i];
                     genRpc(name);
-                } else {
-                    System.out.println("命令错误，请输入命令");
-                    System.out.println("帮助：" + HELP);
-                    break;
                 }
+            } else {
+                System.out.println("命令错误，请输入命令");
+                System.out.println("帮助：" + HELP);
+                break;
             }
         }
     }
 
-    private static void genUpdateModel(String name) throws Exception {
-        tableName = name;
-        name = camelCase2SnakeCase(name);
-        model = name;
+    private static void genUpdateModel(String tableName, String modelName) throws Exception {
+        RpcGen.tableName = tableName;
+        tableName = camelCase2SnakeCase(tableName);
+        if (modelName != null && !"".equals(modelName)) {
+            model = modelName;
+        } else {
+            model = tableName;
+        }
         genModel = true;
         columnList = getDBColumn();
 //        GenConf createModel = new GenConf(name, ".java", "CreateModel.ftl", null, "entity", GEN_TYPE_MODEL);
 //        create(createModel);
-        GenConf createBaseModel = new GenConf(name, "Base.java", "CreateModelBase.ftl", null, "entity", GEN_TYPE_MODEL);
+        GenConf createBaseModel = new GenConf(modelName, "Base.java", "CreateModelBase.ftl", null, "entity", GEN_TYPE_MODEL);
         createBaseModel.setNew(true);
         create(createBaseModel);
 //        GenConf dao = new GenConf(name, "DAO.java", "CreateModelDAO.ftl", null, "dao", GEN_TYPE_DAO);
 //        create(dao);
-        GenConf baseMapper = new GenConf(name, "BaseMapper.xml", "CreateBaseMapperXml.ftl", null, "mappers", GEN_TYPE_MAPPER);
+        GenConf baseMapper = new GenConf(modelName, "BaseMapper.xml", "CreateBaseMapperXml.ftl", null, "mappers", GEN_TYPE_MAPPER);
         baseMapper.setNew(true);
         create(baseMapper);
-        GenConf baseDao = new GenConf(name, "BaseDAO.java", "CreateModelBaseDAO.ftl", null, "dao", GEN_TYPE_DAO);
+        GenConf baseDao = new GenConf(modelName, "BaseDAO.java", "CreateModelBaseDAO.ftl", null, "dao", GEN_TYPE_DAO);
         baseDao.setNew(true);
         create(baseDao);
         genModel = false;
         model = null;
     }
 
-    private static void genCreateModel(String name) throws Exception {
-        tableName = name;
-        name = camelCase2SnakeCase(name);
-        model = name;
+    private static void genCreateModel(String tableName, String modelName) throws Exception {
+        RpcGen.tableName = tableName;
+        tableName = camelCase2SnakeCase(tableName);
+        if (modelName != null && !"".equals(modelName)) {
+            model = modelName;
+        } else {
+            model = tableName;
+        }
         genModel = true;
         columnList = getDBColumn();
-        GenConf createModel = new GenConf(name, ".java", "CreateModel.ftl", null, "entity", GEN_TYPE_MODEL);
+        GenConf createModel = new GenConf(modelName, ".java", "CreateModel.ftl", null, "entity", GEN_TYPE_MODEL);
         create(createModel);
-        GenConf createBaseModel = new GenConf(name, "Base.java", "CreateModelBase.ftl", null, "entity", GEN_TYPE_MODEL);
+        GenConf createBaseModel = new GenConf(modelName, "Base.java", "CreateModelBase.ftl", null, "entity", GEN_TYPE_MODEL);
         create(createBaseModel);
-        GenConf dao = new GenConf(name, "DAO.java", "CreateModelDAO.ftl", null, "dao", GEN_TYPE_DAO);
+        GenConf dao = new GenConf(modelName, "DAO.java", "CreateModelDAO.ftl", null, "dao", GEN_TYPE_DAO);
         create(dao);
-        GenConf baseDao = new GenConf(name, "BaseDAO.java", "CreateModelBaseDAO.ftl", null, "dao", GEN_TYPE_DAO);
+        GenConf baseDao = new GenConf(modelName, "BaseDAO.java", "CreateModelBaseDAO.ftl", null, "dao", GEN_TYPE_DAO);
         create(baseDao);
-        GenConf mapper = new GenConf(name, "Mapper.xml", "CreateMapperXml.ftl", null, "mappers", GEN_TYPE_MAPPER);
+        GenConf mapper = new GenConf(modelName, "Mapper.xml", "CreateMapperXml.ftl", null, "mappers", GEN_TYPE_MAPPER);
         create(mapper);
-        GenConf baseMapper = new GenConf(name, "BaseMapper.xml", "CreateBaseMapperXml.ftl", null, "mappers", GEN_TYPE_MAPPER);
+        GenConf baseMapper = new GenConf(modelName, "BaseMapper.xml", "CreateBaseMapperXml.ftl", null, "mappers", GEN_TYPE_MAPPER);
         create(baseMapper);
-        genCurd(name);
+        genCurd(modelName);
         genModel = false;
-        GenConf createModelDTO = new GenConf(name, "DTO.java", "CreateModelDTO.ftl", null, "dto", GEN_TYPE_MODEL_DTO);
+        GenConf createModelDTO = new GenConf(modelName, "DTO.java", "CreateModelDTO.ftl", null, "dto", GEN_TYPE_MODEL_DTO);
         create(createModelDTO);
         model = null;
     }
@@ -327,7 +336,7 @@ public class RpcGen {
                 filePath = checkPath(MAPPER_PATH + "mappers/", model + suffix);
                 break;
             case GEN_TYPE_DAO:
-                filePath = checkPath(DAO_PATH + module + "/dao/", model + suffix);
+                filePath = checkPath(DAO_PATH + "dao/" + module + "/", model + suffix);
                 break;
             case GEN_TYPE_VO:
                 filePath = checkPath(DISK_PATH + module + "/vo/", name + suffix);
@@ -437,6 +446,7 @@ public class RpcGen {
         dataMap.put("MainClass", MAIN_CLASS);
         dataMap.put("springActive", SPRING_ACTIVE);
         dataMap.put("tableName", tableName);
+        dataMap.put("daoName", DAO_NAME);
 
         dataMap.put("ApiResult", API_RESULT);
         dataMap.put("PageList", PAGE_LIST);
@@ -498,6 +508,12 @@ public class RpcGen {
     private static String upCaseFirstChar(String name) {
         char[] uName = name.toCharArray();
         uName[0] = Utils.charUppercase(uName[0]);
+        return String.valueOf(uName);
+    }
+
+    private static String lowerCaseFirstChar(String name) {
+        char[] uName = name.toCharArray();
+        uName[0] = Utils.charLowercase(uName[0]);
         return String.valueOf(uName);
     }
 

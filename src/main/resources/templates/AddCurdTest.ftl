@@ -30,7 +30,7 @@
         }
         BatchAdd${Model}DTO dto = new BatchAdd${Model}DTO();
         dto.set${Model}List(${model}List);
-        TestUtil.showJSON(dto);
+        TestUtil.showJSON(dto.init${Model}List());
         ApiResult${"\l"}BatchAdd${Model}VO${"\g"} result = ${controllerName}Controller.batchAdd${Model}(dto);
         TestUtil.showJSON(result);
         assertEquals(result.getResult().getAddCount(), Optional.of(addCount).get());

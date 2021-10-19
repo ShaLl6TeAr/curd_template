@@ -108,7 +108,7 @@ public class ${Name}DTO {
         this.${model}List = ${model}List;
     }
 </#if>
-<#if (type = 'add' || type = 'update')>
+<#if (type = 'add' || type = 'update' || type = 'list' || type = 'find')>
     <#if model?exists>
         <#if columnList?exists>
             <#list columnList as column>

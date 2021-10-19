@@ -1,4 +1,4 @@
-package ${daoPath}${module}.dao;
+package ${daoPath}${daoName}.${module};
 
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Mapper;
@@ -10,7 +10,7 @@ import ${sqlBuilder};
 import java.util.List;
 
 @Mapper
-public interface ${Model}BaseDAO {
+public interface ${Model}Base${daoName?upper_case} {
 
     int add${Model}(@Param("${model}") ${Model} ${model});
 
