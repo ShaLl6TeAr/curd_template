@@ -8,20 +8,20 @@ import java.util.stream.Collectors;
 public class SqlBuilder {
 
     public static class Condition {
-        private String condition;
-        private String field;
+        private final String condition;
+        private final String field;
         private Object value;
         private Object valueBegin;
         private Object valueEnd;
         private List<Condition> orList;
 
-        public Condition(String condition, String field, Object value) {
+        public Condition(String field, String condition, Object value) {
             this.field = "`" + field + "`";
             this.value = value;
             this.condition = condition;
         }
 
-        public Condition(String condition, String field, Object valueBegin, Object valueEnd) {
+        public Condition(String field, String condition, Object valueBegin, Object valueEnd) {
             this.field = field;
             this.valueBegin = valueBegin;
             this.valueEnd = valueEnd;
@@ -31,18 +31,23 @@ public class SqlBuilder {
         public String getCondition() {
             return condition;
         }
+
         public String getField() {
             return field;
         }
+
         public Object getValue() {
             return value;
         }
+
         public Object getValueBegin() {
             return valueBegin;
         }
+
         public Object getValueEnd() {
             return valueEnd;
         }
+
         public List<Condition> getOrList() {
             return orList;
         }
@@ -60,6 +65,7 @@ public class SqlBuilder {
         public long getOffset() {
             return offset;
         }
+
         public int getLimit() {
             return limit;
         }
@@ -73,7 +79,7 @@ public class SqlBuilder {
         private String group;
         private Limit limit;
 
-        public Operation fields(String ...fields) {
+        public Operation fields(String... fields) {
             this.fields = buildField(fields);
             return this;
         }
@@ -108,17 +114,21 @@ public class SqlBuilder {
         }
 
         public Operation or(List<Condition> conditions) {
-            Condition or = new Condition("or", null, null);
+            Condition or = new Condition(null, "or", null);
             or.orList = conditions;
             this.conditions.add(or);
             return this;
+        }
+
+        public Operation inValue(String field, List<Object> valueList) {
+            return condition(field, "in", valueList);
         }
 
         public Operation condition(String field, String condition, Object value) {
             if (this.conditions == null) {
                 this.conditions = new ArrayList<>();
             }
-            this.conditions.add(new Condition(condition, field, value));
+            this.conditions.add(new Condition(field, condition, value));
             return this;
         }
 
@@ -126,20 +136,20 @@ public class SqlBuilder {
             if (this.conditions == null) {
                 this.conditions = new ArrayList<>();
             }
-            this.conditions.add(new Condition("between", field, valueBegin, valueEnd));
+            this.conditions.add(new Condition(field, "between", valueBegin, valueEnd));
             return this;
         }
 
-        public Operation or(Condition ...condition) {
+        public Operation or(Condition... condition) {
             return this;
         }
 
-        public Operation orderBy(String ...fields) {
+        public Operation orderBy(String... fields) {
             this.order = buildField(fields);
             return this;
         }
 
-        public Operation groupBy(String ...fields) {
+        public Operation groupBy(String... fields) {
             this.group = buildField(fields);
             return this;
         }
@@ -149,11 +159,11 @@ public class SqlBuilder {
             return this;
         }
 
-        public String buildField(String ...field) {
+        public String buildField(String... field) {
             return Arrays.stream(field).map(d -> "`" + d + "`").collect(Collectors.joining(","));
         }
 
-        public List<String> buildValue(String ...value) {
+        public List<String> buildValue(String... value) {
             return Arrays.stream(value).map(d -> "'" + d + "'").collect(Collectors.toList());
         }
 
@@ -182,11 +192,32 @@ public class SqlBuilder {
         }
     }
 
-    public static Operation select() {
-        Operation operation = new Operation();
-        return operation;
+    public static Operation operation() {
+        return new Operation();
     }
 
+    public static Condition equalValue(String field, Object value) {
+        return new Condition(field, "=", value);
+    }
 
+    public static Condition grateThan(String field, Object value) {
+        return new Condition(field, ">", value);
+    }
+
+    public static Condition grateEqualThan(String field, Object value) {
+        return new Condition(field, ">=", value);
+    }
+
+    public static Condition smallThan(String field, Object value) {
+        return new Condition(field, "<", value);
+    }
+
+    public static Condition smallEqualThan(String field, Object value) {
+        return new Condition(field, "<=", value);
+    }
+
+    public static Condition inValue(String field, List<Object> valueList) {
+        return new Condition(field, "in", valueList);
+    }
 
 }

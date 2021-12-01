@@ -470,8 +470,7 @@ public class RpcGen {
     }
 
     private static String setPath(String path) {
-        return path.replace("../ecomonitor-dao/", "")
-                .replace("../ecomonitor/", "")
+        return path
                 .replace("../", "")
                 .replace("/", ".")
                 .replace("src.test.java.", "")

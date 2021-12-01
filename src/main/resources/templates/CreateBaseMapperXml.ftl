@@ -19,9 +19,9 @@
         <#if columnList?exists>
         <#list columnList as column>
         <#if (column.name = 'id' || column.name = 'c_id')>
-            ${column.name}
+            `${column.name}`
         <#else>
-            ,${column.name}
+            ,`${column.name}`
         </#if>
         </#list>
         </#if>
@@ -124,7 +124,7 @@
         <#else>
         <if test="${model}.${column.field} != null">
         </#if>
-            and ${column.name} = ${r"#{"}${model}.${column.field}${"}"}
+            and `${column.name}` = ${r"#{"}${model}.${column.field}${"}"}
         </if>
         </#list>
     </sql>
@@ -139,6 +139,12 @@
                     <when test="condition.condition == 'like'">
                         and ${r"${condition.field}"} like concat('%', ${r"#{condition.value}"}, '%')
                     </when>
+                    <when test="condition.condition == 'in'">
+                        and ${r"${condition.field}"} in
+                        <foreach collection="condition.value" item="value" open="(" separator="," close=")">
+                            ${r"${value}"}
+                        </foreach>
+                    </when>
                     <when test="condition.condition == 'or'">
                         and
                         <trim prefix="(" suffix=")" prefixOverrides="or">
@@ -149,6 +155,12 @@
                                     </when>
                                     <when test="c.condition == 'like'">
                                         or ${r"${c.field}"} like concat('%', ${r"#{c.value}"}, '%')
+                                    </when>
+                                    <when test="condition.condition == 'in'">
+                                        or ${r"${condition.field}"} in
+                                        <foreach collection="condition.value" item="value" open="(" separator="," close=")">
+                                            ${r"${value}"}
+                                        </foreach>
                                     </when>
                                     <otherwise>
                                         or ${r"${c.field}"} ${r"${c.condition}"} ${r"#{c.value}"}
