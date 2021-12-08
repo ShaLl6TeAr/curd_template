@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import java.util.List;
 </#if>
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDateTime;
 
@@ -17,17 +18,17 @@ public class ${Name}VO {
 
 <#switch type>
     <#case 'add'>
-        private Integer addCount;
+        private final Integer addCount;
 
-        private String id;
+        private final String id;
 
         public ${Name}VO(Integer count, String id) {
-        this.addCount = count;
-        this.id = id;
+            this.addCount = count;
+            this.id = id;
         }
 
         public Integer getAddCount() {
-        return this.addCount;
+            return this.addCount;
         }
 
         public String getId() {
@@ -35,9 +36,9 @@ public class ${Name}VO {
         }
         <#break>
     <#case 'batchAdd'>
-    private Integer addCount;
+    private final Integer addCount;
 
-    private List${"\l"}String${"\g"} idList;
+    private final List${"\l"}String${"\g"} idList;
 
     public ${Name}VO(Integer count, List${"\l"}${Model}${"\g"} ${model}List) {
         this.addCount = count;
@@ -53,9 +54,9 @@ public class ${Name}VO {
     }
     <#break>
     <#case 'update'>
-    private Integer updateCount;
+    private final Integer updateCount;
 
-    private String id;
+    private final String id;
 
     public ${Name}VO(Integer count, String id) {
         this.updateCount = count;
@@ -71,9 +72,9 @@ public class ${Name}VO {
     }
     <#break>
     <#case 'del'>
-    private Integer delCount;
+    private final Integer delCount;
 
-    private String id;
+    private final String id;
 
     public ${Name}VO(Integer count, String id) {
         this.delCount = count;
@@ -100,7 +101,7 @@ public class ${Name}VO {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+08:00")
     </#if>
     // ${column.comment}
-    private ${column.type} ${column.field};
+    private final ${column.type} ${column.field};
 
         </#if>
         </#list>
@@ -122,10 +123,9 @@ public class ${Name}VO {
     public ${column.type} get${column.field?cap_first}() {
         return this.${column.field};
     }
-
-    public void set${column.field?cap_first}(${column.type} ${column.field}) {
-        this.${column.field} = ${column.field};
-    }
+<#--    public void set${column.field?cap_first}(${column.type} ${column.field}) {-->
+<#--        this.${column.field} = ${column.field};-->
+<#--    }-->
 
             </#if>
         </#list>

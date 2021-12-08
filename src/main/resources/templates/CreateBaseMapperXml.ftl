@@ -38,7 +38,9 @@
             column.name != 'delete_time' &&
             column.name != 'update_version' &&
             column.name != 'delete_flag')>
-            ,`${column.name}`
+            <if test="${model}.${column.field} != null">
+                ,`${column.name}`
+            </if>
             </#if>
         </#list>
         )
@@ -50,7 +52,9 @@
             column.name != 'delete_time' &&
             column.name != 'update_version' &&
             column.name != 'delete_flag')>
-            ,${r"#{"}${model}.${column.field}${"}"}
+            <if test="${model}.${column.field} != null">
+                ,${r"#{"}${model}.${column.field}${"}"}
+            </if>
             </#if>
         </#list> )
     </sql>
@@ -65,7 +69,9 @@
             column.name != 'delete_time' &&
             column.name != 'update_version' &&
             column.name != 'delete_flag')>
+            <if test="${model}.${column.field} != null">
                 ,`${column.name}`
+            </if>
             </#if>
         </#list>
         )
@@ -78,7 +84,9 @@
                 column.name != 'delete_time' &&
                 column.name != 'update_version' &&
                 column.name != 'delete_flag')>
+                <if test="${model}.${column.field} != null">
                     ,${r"#{"}${model}.${column.field}${"}"}
+                </if>
                 </#if>
             </#list>
             )

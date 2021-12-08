@@ -1,5 +1,6 @@
 
     @PostMapping(value = "/add${Model}")
+    @ResponseBody
     public ApiResult${"\l"}Add${Model}VO${"\g"} add${Model}(@Validated @RequestBody Add${Model}DTO dto) {
         ApiResult${"\l"}Add${Model}VO${"\g"} result = new ApiResult${"\l"}${"\g"}();
         ${Model} ${model} = dto.init${Model}();
@@ -9,6 +10,7 @@
     }
 
     @PostMapping(value = "/batchAdd${Model}")
+    @ResponseBody
     public ApiResult${"\l"}BatchAdd${Model}VO${"\g"} batchAdd${Model}(@Validated @RequestBody BatchAdd${Model}DTO dto) {
         ApiResult${"\l"}BatchAdd${Model}VO${"\g"} result = new ApiResult${"\l"}${"\g"}();
         List<${Model}> ${model}List = dto.init${Model}List();
@@ -18,6 +20,7 @@
     }
 
     @GetMapping(value = "/list${Model}")
+    @ResponseBody
     public ApiResult${r"<PageList.PageData<List"}${Model}${r"VO>>"} list${Model}(@Validated List${Model}DTO dto) {
         ApiResult${r"<PageList.PageData<List"}${Model}${r"VO>>"} result = new ApiResult${"\l"}${"\g"}();
         ${Model}DTO ${model} = new ${Model}DTO();
@@ -28,6 +31,7 @@
     }
 
     @GetMapping(value = "/get${Model}")
+    @ResponseBody
     public ApiResult${"\l"}Get${Model}VO${"\g"} get${Model}(@Validated Get${Model}DTO dto) {
         ApiResult${"\l"}Get${Model}VO${"\g"} result = new ApiResult${"\l"}${"\g"}();
         ${Model}DTO ${model} = new ${Model}DTO();
@@ -35,13 +39,14 @@
         try {
             Get${Model}VO vo = new Get${Model}VO(${module}Service.get${Model}(${model}));
             result.setResult(vo);
+            return result;
         } catch (${Model}NotFoundException e) {
             throw new RuntimeException(e.getMessage());
         }
-        return result;
     }
 
     @GetMapping(value = "/find${Model}")
+    @ResponseBody
     public ApiResult${"\l"}Find${Model}VO${"\g"} find${Model}(@Validated Find${Model}DTO dto) {
         ApiResult${"\l"}Find${Model}VO${"\g"} result = new ApiResult${"\l"}${"\g"}();
         ${Model}DTO ${model} = new ${Model}DTO();
@@ -51,6 +56,7 @@
     }
 
     @PostMapping(value = "/update${Model}")
+    @ResponseBody
     public ApiResult${"\l"}Update${Model}VO${"\g"} update${Model}(@Validated @RequestBody Update${Model}DTO dto) {
         ApiResult${"\l"}Update${Model}VO${"\g"} result = new ApiResult${"\l"}${"\g"}();
         try {
@@ -60,13 +66,14 @@
             dto.update${Model}(old);
             int updateCount = ${module}Service.update${Model}(old);
             result.setResult(new Update${Model}VO(updateCount, ${model}.getId()));
+            return result;
         } catch (${Model}NotFoundException e) {
             throw new RuntimeException(e.getMessage());
         }
-        return result;
     }
 
     @PostMapping(value = "/del${Model}")
+    @ResponseBody
     public ApiResult${"\l"}Del${Model}VO${"\g"} del${Model}(@Validated Del${Model}DTO dto) {
         ApiResult${"\l"}Del${Model}VO${"\g"} result = new ApiResult${"\l"}${"\g"}();
         result.setResult(new Del${Model}VO(${module}Service.softDel${Model}(dto.getDel${Model}Id()), dto.getDel${Model}Id()));
