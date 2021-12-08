@@ -474,7 +474,6 @@ public class RpcGen {
     private static String setPath(String path) {
         return path
                 .replace("../", "")
-                .replace("huihangerp-repository/", "")
                 .replace("/", ".")
                 .replace("src.test.java.", "")
                 .replace("src.main.java.", "");
