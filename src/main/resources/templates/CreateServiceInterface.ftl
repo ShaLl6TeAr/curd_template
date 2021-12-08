@@ -1,9 +1,8 @@
-package ${servicePath}.impl;
+package ${servicePath};
 
 import org.springframework.stereotype.Service;
 
 <#if model?exists>
-import ${servicePath}.impl.${Module}Service;
 import ${modelPath}${module}.entity.${Model};
 import ${modelPath}${module}.dto.${Model}DTO;
 import ${daoPath}${module}.${Model}${daoName};
@@ -15,5 +14,5 @@ import javax.annotation.Resource;
 import java.util.List;
 
 @Service
-public class ${Module}ServiceImpl implements ${Module}Service {
+public interface ${Module}Service {
 }

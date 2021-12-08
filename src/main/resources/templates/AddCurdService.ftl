@@ -3,22 +3,22 @@
     private ${Model}${daoName} ${model}${daoName};
 
     public int add${Model}(${Model} ${model}) {
-        ${model}.setId(EcoUtil.uuid());
+        ${model}.setId(CommonUtil.uuid());
         return ${model}${daoName}.add${Model}(${model});
     }
 
     public int batchAdd${Model}(List<${Model}> ${model}List) {
-        ${model}List.forEach(d -> d.setId(EcoUtil.uuid()));
+        ${model}List.forEach(d -> d.setId(CommonUtil.uuid()));
         return ${model}${daoName}.batchAdd${Model}(${model}List);
     }
 
     public int insertOrReplace${Model}(${Model} ${model}) {
-        ${model}.setId(EcoUtil.uuid());
+        ${model}.setId(CommonUtil.uuid());
         return ${model}${daoName}.insertOrReplace${Model}(${model});
     }
 
     public int batchInsertOrReplace${Model}(List<${Model}> ${model}List) {
-        ${model}List.forEach(d -> d.setId(EcoUtil.uuid()));
+        ${model}List.forEach(d -> d.setId(CommonUtil.uuid()));
         return ${model}${daoName}.batchInsertOrReplace${Model}(${model}List);
     }
 

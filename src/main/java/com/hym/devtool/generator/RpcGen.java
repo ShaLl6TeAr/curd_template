@@ -229,8 +229,10 @@ public class RpcGen {
         generateRpcVO("list" + uName);
         GenConf controller = new GenConf(name, "Controller.java", "CreateController.ftl", "AddCurdController.ftl", "controller", GEN_TYPE_CONTROLLER);
         createAndAdd(controller);
-        GenConf service = new GenConf(name,"Service.java", "CreateService.ftl", "AddCurdService.ftl", "service", GEN_TYPE_SERVICE);
+        GenConf service = new GenConf(name,"ServiceImpl.java", "CreateService.ftl", "AddCurdService.ftl", "service", GEN_TYPE_SERVICE);
         createAndAdd(service);
+        GenConf serviceInterface = new GenConf(name,"Service.java", "CreateServiceInterface.ftl", "AddCurdServiceInterface.ftl", "service", GEN_TYPE_SERVICE);
+        createAndAdd(serviceInterface);
         GenConf test = new GenConf(name, "Test.java", "CreateTest.ftl", "AddCurdTest.ftl", "test", GEN_TYPE_TEST);
         createAndAdd(test);
         GenConf exception = new GenConf(name, "NotFoundException.java", "CreateNotFoundException.ftl", null, "exception", GEN_TYPE_EXCEPTION);
@@ -472,6 +474,7 @@ public class RpcGen {
     private static String setPath(String path) {
         return path
                 .replace("../", "")
+                .replace("huihangerp-repository/", "")
                 .replace("/", ".")
                 .replace("src.test.java.", "")
                 .replace("src.main.java.", "");
